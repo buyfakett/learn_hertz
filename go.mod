@@ -3,6 +3,7 @@ module hertz_demo
 go 1.23.4
 
 require (
+	github.com/apache/thrift v0.21.0
 	github.com/cloudwego/hertz v0.9.6
 	github.com/hertz-contrib/swagger v0.1.1
 	github.com/swaggo/files v1.0.1
@@ -37,3 +38,5 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
