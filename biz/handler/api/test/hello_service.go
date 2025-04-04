@@ -45,3 +45,21 @@ func TestGetMethod(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, resp)
 }
+
+// TestPostMethod .
+// @router /add [PUT]
+func TestPostMethod(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req test.TestPutReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(test.TestPutResp)
+
+	resp.Message = req.Age + "岁的" + req.Name + "插入成功"
+
+	c.JSON(consts.StatusOK, resp)
+}

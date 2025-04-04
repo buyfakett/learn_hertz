@@ -20,3 +20,8 @@ func _testgetmethodMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _testpostmethodMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
