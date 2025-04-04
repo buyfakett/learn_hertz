@@ -15,3 +15,8 @@ func _hellomethodMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _testgetmethodMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

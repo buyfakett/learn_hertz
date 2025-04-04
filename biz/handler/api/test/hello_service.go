@@ -27,3 +27,21 @@ func HelloMethod(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, resp)
 }
+
+// TestGetMethod .
+// @router /get [GET]
+func TestGetMethod(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req test.TestGetReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(test.TestGetResp)
+
+	resp.Message = "你好," + req.Age + "岁的" + req.Name
+
+	c.JSON(consts.StatusOK, resp)
+}
