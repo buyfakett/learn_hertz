@@ -3,15 +3,19 @@
 package main
 
 import (
+	"fmt"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
+	"hertz_demo/config"
 )
 
 func main() {
 	// The default listening port is 8888.
 	// You can modify it with server.WithHostPorts().
+	config.InitConfig()
+	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)
 	h := server.Default(
-		server.WithHostPorts("127.0.0.1:8888"),
+		server.WithHostPorts(port),
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithTransport(standard.NewTransporter),
 	)
