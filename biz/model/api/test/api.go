@@ -149,7 +149,7 @@ func (p *HelloReq) String() string {
 
 type TestGetReq struct {
 	Name string `thrift:"Name,1" json:"Name" query:"name"`
-	Age  string `thrift:"Age,2" json:"Age" query:"age" vd:"$!='0'; msg:'年龄不能为0'"`
+	Age  int8   `thrift:"Age,2" json:"Age" query:"age" vd:"$!='0'; msg:'年龄不能为0'"`
 }
 
 func NewTestGetReq() *TestGetReq {
@@ -163,7 +163,7 @@ func (p *TestGetReq) GetName() (v string) {
 	return p.Name
 }
 
-func (p *TestGetReq) GetAge() (v string) {
+func (p *TestGetReq) GetAge() (v int8) {
 	return p.Age
 }
 
@@ -199,7 +199,7 @@ func (p *TestGetReq) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 2:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.BYTE {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -248,8 +248,8 @@ func (p *TestGetReq) ReadField1(iprot thrift.TProtocol) error {
 }
 func (p *TestGetReq) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field int8
+	if v, err := iprot.ReadByte(); err != nil {
 		return err
 	} else {
 		_field = v
@@ -307,10 +307,10 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 func (p *TestGetReq) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Age", thrift.STRING, 2); err != nil {
+	if err = oprot.WriteFieldBegin("Age", thrift.BYTE, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Age); err != nil {
+	if err := oprot.WriteByte(p.Age); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -333,7 +333,7 @@ func (p *TestGetReq) String() string {
 
 type TestPutReq struct {
 	Name string `thrift:"Name,1" form:"name" json:"Name"`
-	Age  string `thrift:"Age,2" form:"age" json:"Age" vd:"$!='0'; msg:'年龄不能为0'"`
+	Age  int8   `thrift:"Age,2" form:"age" json:"Age" vd:"$!='0'; msg:'年龄不能为0'"`
 }
 
 func NewTestPutReq() *TestPutReq {
@@ -347,7 +347,7 @@ func (p *TestPutReq) GetName() (v string) {
 	return p.Name
 }
 
-func (p *TestPutReq) GetAge() (v string) {
+func (p *TestPutReq) GetAge() (v int8) {
 	return p.Age
 }
 
@@ -383,7 +383,7 @@ func (p *TestPutReq) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 2:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.BYTE {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -432,8 +432,8 @@ func (p *TestPutReq) ReadField1(iprot thrift.TProtocol) error {
 }
 func (p *TestPutReq) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field int8
+	if v, err := iprot.ReadByte(); err != nil {
 		return err
 	} else {
 		_field = v
@@ -491,10 +491,10 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 func (p *TestPutReq) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Age", thrift.STRING, 2); err != nil {
+	if err = oprot.WriteFieldBegin("Age", thrift.BYTE, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Age); err != nil {
+	if err := oprot.WriteByte(p.Age); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {

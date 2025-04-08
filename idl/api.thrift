@@ -6,12 +6,12 @@ struct HelloReq {
 
 struct TestGetReq {
     1: string Name (api.query="name");
-    2: string Age (api.query="age", api.vd="$!='0'; msg:'年龄不能为0'");
+    2: i8 Age (api.query="age", api.vd="$!='0'; msg:'年龄不能为0'");
 }
 
 struct TestPutReq {
     1: string Name (api.form="name");
-    2: string Age (api.form="age", api.vd="$!='0'; msg:'年龄不能为0'");
+    2: i8 Age (api.form="age", api.vd="$!='0'; msg:'年龄不能为0'");
 }
 
 struct HelloResp {

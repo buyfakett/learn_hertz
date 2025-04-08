@@ -4,6 +4,7 @@ package test
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -41,7 +42,9 @@ func TestGetMethod(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(test.TestGetResp)
 
-	resp.Message = "你好," + req.Age + "岁的" + req.Name
+	str_age := strconv.Itoa(int(req.Age))
+
+	resp.Message = "你好," + str_age + "岁的" + req.Name
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -59,7 +62,9 @@ func TestPostMethod(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(test.TestPutResp)
 
-	resp.Message = req.Age + "岁的" + req.Name + "插入成功"
+	str_age := strconv.Itoa(int(req.Age))
+
+	resp.Message = str_age + "岁的" + req.Name + "插入成功"
 
 	c.JSON(consts.StatusOK, resp)
 }
