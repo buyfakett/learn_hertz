@@ -24,7 +24,7 @@ var Cfg AppConfig
 func InitConfig() {
 	// 1. 命令行参数
 	var configFile string
-	pflag.StringVar(&configFile, "config", "config.yaml", "Path to custom config file")
+	pflag.StringVar(&configFile, "config", "config/config.yaml", "Path to custom config file")
 	pflag.IntVar(&Cfg.Server.Port, "server.port", 8888, "Server port")
 	pflag.Parse()
 
