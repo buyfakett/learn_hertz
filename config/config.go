@@ -31,7 +31,7 @@ func InitConfig() {
 	// 2. 默认配置文件
 	viper.SetConfigName("default")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath("config/")
 	_ = viper.MergeInConfig()
 
 	// 3. 用户自定义配置文件（覆盖默认）
