@@ -3,10 +3,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"hertz_demo/config"
+	"log"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
@@ -21,5 +26,23 @@ func main() {
 	)
 
 	register(h)
-	h.Spin()
+
+	// 捕获 Ctrl+C / kill 等退出信号
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	go func() {
+		if err := h.Run(); err != nil {
+			log.Fatalf("服务启动失败: %v", err)
+		}
+	}()
+
+	<-ctx.Done()
+
+	// 控制优雅退出的超时时间，0.5秒就退出
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+	defer cancel()
+	if err := h.Shutdown(shutdownCtx); err != nil {
+		log.Printf("关闭报错: %v", err)
+	}
 }
