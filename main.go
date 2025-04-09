@@ -5,11 +5,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/network/standard"
+	"net/http"
+	"os"
+	"path/filepath"
 	//"github.com/hertz-contrib/swagger"
 	//"github.com/hertz-contrib/swagger/example/basic/docs"
 	//swaggerFiles "github.com/swaggo/files"
+	"github.com/hertz-contrib/logger/accesslog"
 	"hertz_demo/config"
 	"log"
 	"os/signal"
@@ -30,6 +36,31 @@ func main() {
 
 	//url := swagger.URL("http://localhost:8888/swagger/doc.json")
 	//h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
+
+	h.Use(accesslog.New(accesslog.WithFormat("[${time}] ${status} - ${latency} ${method} ${path} ${queryParams}")))
+
+	// 静态文件服务，匹配所有路径
+	h.GET("/*filepath", func(c context.Context, ctx *app.RequestContext) {
+		filePath := ctx.Param("filepath")
+
+		// 默认访问根路径，重定向到 index.html
+		if filePath == "/" || filePath == "" {
+			filePath = "/index.html"
+		}
+
+		// 拼接本地文件路径
+		fullPath := filepath.Join("./static", filePath)
+
+		// 判断文件是否存在
+		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+			hlog.Warnf("文件不存在: %s", fullPath)
+			ctx.String(http.StatusNotFound, "404 not found")
+			return
+		}
+
+		// 返回文件
+		ctx.File(fullPath)
+	})
 
 	register(h)
 

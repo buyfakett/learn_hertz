@@ -4,6 +4,7 @@ go 1.23.4
 
 require (
 	github.com/cloudwego/hertz v0.9.7
+	github.com/hertz-contrib/logger/accesslog v0.0.0-20241107070745-e4ce8c54dd97
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
 	google.golang.org/protobuf v1.36.1
