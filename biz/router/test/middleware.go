@@ -11,17 +11,12 @@ func rootMw() []app.HandlerFunc {
 	return nil
 }
 
-func _hellomethodMw() []app.HandlerFunc {
+func _apiMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _testgetmethodMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _testpostmethodMw() []app.HandlerFunc {
+func _commentactionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package test;
+
+import "api.proto";
+
+
+option go_package = "hello/test";
+
+message TestRequest {
+  int64 age = 1;
+  string name = 2;
+}
+
+message TestResponse {
+  int32 status_code = 1[(api.go_tag)='json:"status_code"']; // status code, 0-success, other values-failure
+  string status_msg = 2; // status description
+}
+
+service CommentHandler {
+  rpc CommentAction(TestRequest) returns(TestResponse) {
+      option (api.post) = "/api/test";
+      // Logged in users to comment on videos.
+  }
+}
+

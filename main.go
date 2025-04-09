@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
+	"github.com/hertz-contrib/swagger"
+	_ "github.com/hertz-contrib/swagger/example/basic/docs"
+	swaggerFiles "github.com/swaggo/files"
 	"hertz_demo/config"
 	"log"
 	"os/signal"
@@ -24,6 +27,9 @@ func main() {
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithTransport(standard.NewTransporter),
 	)
+
+	url := swagger.URL("http://localhost:8888/swagger/doc.json")
+	h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
 
 	register(h)
 
