@@ -19,12 +19,15 @@ package dal
 import (
 	"hertz_demo/config"
 	"hertz_demo/dal/mysql"
+	"hertz_demo/dal/pg"
 )
 
 func Init() {
 	switch config.Cfg.Db.Type {
 	case "mysql":
 		mysql.Init()
+	case "postgres":
+		pg.Init()
 	}
 
 }
