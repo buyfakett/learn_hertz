@@ -1,2 +1,5 @@
 server:
   port: 8888
+db:
+  type: sqlite3
+  database: test

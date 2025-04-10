@@ -20,6 +20,7 @@ import (
 	"hertz_demo/config"
 	"hertz_demo/dal/mysql"
 	"hertz_demo/dal/pg"
+	"hertz_demo/dal/sqlite"
 )
 
 func Init() {
@@ -28,6 +29,8 @@ func Init() {
 		mysql.Init()
 	case "postgres":
 		pg.Init()
+	case "sqlite3":
+		sqlite.Init()
 	}
 
 }
