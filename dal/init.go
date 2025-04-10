@@ -3,7 +3,7 @@ package dal
 import (
 	"hertz_demo/config"
 	"hertz_demo/dal/mysql"
-	"hertz_demo/dal/pg"
+	"hertz_demo/dal/postgres"
 	"hertz_demo/dal/sqlite"
 	"log"
 )
@@ -14,7 +14,7 @@ func Init() {
 	case "mysql":
 		mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database)
 	case "postgres":
-		pg.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database)
+		postgres.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database)
 	case "sqlite3":
 		sqlite.Init(config.Cfg.Db.Database)
 	}
