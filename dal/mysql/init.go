@@ -21,14 +21,13 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"hertz_demo/config"
 )
 
 var DB *gorm.DB
 
-func Init() {
+func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName string) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database)
+		dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{

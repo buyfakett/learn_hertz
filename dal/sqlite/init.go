@@ -5,16 +5,15 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"hertz_demo/config"
 	"os"
 )
 
 var DB *gorm.DB
 
-func Init() {
+func Init(Database string) {
 	// 定义数据库文件的路径
 	directory := "data/db"
-	dbFile := fmt.Sprintf("%s/%s.db", directory, config.Cfg.Db.Database)
+	dbFile := fmt.Sprintf("%s/%s.db", directory, Database)
 
 	// 检查文件夹是否存在，如果不存在则创建
 	if _, err := os.Stat(directory); os.IsNotExist(err) {
