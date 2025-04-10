@@ -14,8 +14,18 @@ type ServerConfig struct {
 	Name string `mapstructure:"name"`
 }
 
+type DbConfig struct {
+	Type     string `mapstructure:"type"`
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Database string `mapstructure:"database"`
+}
+
 type AppConfig struct {
 	Server ServerConfig `mapstructure:"server"`
+	Db     DbConfig     `mapstructure:"db"`
 	// 可扩展更多模块配置
 }
 

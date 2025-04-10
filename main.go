@@ -9,6 +9,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/network/standard"
+	"hertz_demo/dal"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -27,6 +28,7 @@ func main() {
 	// The default listening port is 8888.
 	// You can modify it with server.WithHostPorts().
 	config.InitConfig()
+	dal.Init()
 	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)
 	h := server.Default(
 		server.WithHostPorts(port),
