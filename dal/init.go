@@ -1,15 +1,15 @@
 package dal
 
 import (
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/config"
 	"hertz_demo/dal/mysql"
 	"hertz_demo/dal/postgres"
 	"hertz_demo/dal/sqlite"
-	"log"
 )
 
 func Init() {
-	log.Printf("当前数据库为%s", config.Cfg.Db.Type)
+	hlog.Infof("当前数据库为%s", config.Cfg.Db.Type)
 	switch config.Cfg.Db.Type {
 	case "mysql":
 		mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database)
