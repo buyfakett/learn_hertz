@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"gorm.io/gorm/schema"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,6 +20,9 @@ func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
 		Logger:                 logger.Default.LogMode(logger.Info),
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true, // 使用单数表名
+		},
 	})
 	if err != nil {
 		panic(err)

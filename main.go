@@ -9,7 +9,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/network/standard"
-	"hertz_demo/dal"
+	"hertz_demo/biz/dal"
 	"hertz_demo/utils/config"
 	"hertz_demo/utils/logger"
 	"log"

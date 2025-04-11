@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 	"os"
 )
 
@@ -29,6 +30,9 @@ func Init(Database string) {
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
 		Logger:                 logger.Default.LogMode(logger.Info),
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true, // 使用单数表名
+		},
 	})
 	if err != nil {
 		panic(err)
