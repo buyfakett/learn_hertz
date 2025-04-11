@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"hertz_demo/config"
 	"hertz_demo/dal"
+	"hertz_demo/utils/logger"
 	"log"
 	"net/http"
 	"os"
@@ -24,6 +25,7 @@ func main() {
 	// The default listening port is 8888.
 	// You can modify it with server.WithHostPorts().
 	config.InitConfig()
+	logger.InitLog(config.Cfg.Server.LogLevel)
 	dal.Init()
 	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)
 	h := server.Default(
@@ -34,20 +36,6 @@ func main() {
 
 	//url := swagger.URL("http://localhost:8888/swagger/doc.json")
 	//h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
-
-	// 设置日志级别
-	switch config.Cfg.Server.LogLevel {
-	case "debug":
-		hlog.SetLevel(hlog.LevelDebug)
-	case "info":
-		hlog.SetLevel(hlog.LevelInfo)
-	case "warn":
-		hlog.SetLevel(hlog.LevelWarn)
-	case "error":
-		hlog.SetLevel(hlog.LevelError)
-	default:
-		hlog.SetLevel(hlog.LevelInfo)
-	}
 
 	// 静态文件服务，匹配所有路径
 	h.GET("/*filepath", func(c context.Context, ctx *app.RequestContext) {
