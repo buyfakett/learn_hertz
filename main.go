@@ -9,17 +9,13 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/network/standard"
+	"hertz_demo/config"
 	"hertz_demo/dal"
+	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-	//"github.com/hertz-contrib/swagger"
-	//"github.com/hertz-contrib/swagger/example/basic/docs"
-	//swaggerFiles "github.com/swaggo/files"
-	"github.com/hertz-contrib/logger/accesslog"
-	"hertz_demo/config"
-	"log"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 )
@@ -39,7 +35,19 @@ func main() {
 	//url := swagger.URL("http://localhost:8888/swagger/doc.json")
 	//h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
 
-	h.Use(accesslog.New(accesslog.WithFormat("[${time}] ${status} - ${latency} ${method} ${path} ${queryParams}")))
+	// 设置日志级别
+	switch config.Cfg.Server.LogLevel {
+	case "debug":
+		hlog.SetLevel(hlog.LevelDebug)
+	case "info":
+		hlog.SetLevel(hlog.LevelInfo)
+	case "warn":
+		hlog.SetLevel(hlog.LevelWarn)
+	case "error":
+		hlog.SetLevel(hlog.LevelError)
+	default:
+		hlog.SetLevel(hlog.LevelInfo)
+	}
 
 	// 静态文件服务，匹配所有路径
 	h.GET("/*filepath", func(c context.Context, ctx *app.RequestContext) {

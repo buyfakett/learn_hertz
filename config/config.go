@@ -14,8 +14,9 @@ import (
 var defaultYaml []byte
 
 type ServerConfig struct {
-	Port int    `mapstructure:"port"`
-	Name string `mapstructure:"name"`
+	Port     int    `mapstructure:"port"`
+	Name     string `mapstructure:"name"`
+	LogLevel string `mapstructure:"log_level"`
 }
 
 type DbConfig struct {
