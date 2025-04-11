@@ -2,10 +2,10 @@ package dal
 
 import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"hertz_demo/config"
 	"hertz_demo/dal/mysql"
 	"hertz_demo/dal/postgres"
 	"hertz_demo/dal/sqlite"
+	"hertz_demo/utils/config"
 )
 
 func Init() {

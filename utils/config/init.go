@@ -1,17 +1,22 @@
 package config
 
 import (
-	_ "embed"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
-//go:embed default.yaml
-var defaultYaml []byte
+// 获取默认配置文件绝对路径
+func getDefaultConfigPath() string {
+	_, filename, _, _ := runtime.Caller(0)                            // 获取当前文件路径
+	projectRoot := filepath.Dir(filepath.Dir(filepath.Dir(filename))) // 上溯三级到项目根目录
+	return filepath.Join(projectRoot, "config/default.yaml")
+}
 
 type ServerConfig struct {
 	Port     int    `mapstructure:"port"`
@@ -44,19 +49,24 @@ func InitConfig() {
 
 	v := viper.New()
 
-	// 2. 加载内嵌的默认配置
-	v.SetConfigType("yaml")
-	if err := v.ReadConfig(strings.NewReader(string(defaultYaml))); err != nil {
-		fmt.Println("加载默认配置失败:", err)
+	// 2. 加载默认配置文件
+	defaultConfig := getDefaultConfigPath()
+	v.SetConfigFile(defaultConfig)
+	if err := v.ReadInConfig(); err != nil {
+		fmt.Printf("加载默认配置失败: %v (路径: %s)\n", err, defaultConfig)
 		os.Exit(1)
 	}
 
-	// 3. 如果有外部配置文件，就加载并合并
+	// 3. 加载外部配置文件（如果存在）
 	if configFile != "" {
-		v.SetConfigFile(configFile)
-		if err := v.MergeInConfig(); err != nil {
-			fmt.Println("加载外部配置失败:", err)
-			os.Exit(1)
+		if _, err := os.Stat(configFile); err == nil {
+			v.SetConfigFile(configFile)
+			if err := v.MergeInConfig(); err != nil {
+				fmt.Printf("加载外部配置失败: %v (路径: %s)\n", err, configFile)
+				os.Exit(1)
+			}
+		} else {
+			fmt.Printf("警告: 外部配置文件不存在，使用默认配置 (路径: %s)\n", configFile)
 		}
 	}
 
