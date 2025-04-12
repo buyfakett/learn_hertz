@@ -2,6 +2,7 @@ package dal
 
 import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"hertz_demo/biz/dal/mysql"
 	"hertz_demo/biz/dal/postgres"
@@ -9,6 +10,8 @@ import (
 	"hertz_demo/bootstrao"
 	"hertz_demo/utils/config"
 )
+
+var DB *gorm.DB
 
 func Init() {
 	dbType := config.Cfg.Db.Type
@@ -24,20 +27,20 @@ func Init() {
 
 	switch dbType {
 	case "mysql":
-		db := mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, gormLogger)
-		err := bootstrao.Migrate(db)
+		DB := mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, gormLogger)
+		err := bootstrao.Migrate(DB)
 		if err != nil {
 			return
 		}
 	case "postgres":
-		db := postgres.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, gormLogger)
-		err := bootstrao.Migrate(db)
+		DB := postgres.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, gormLogger)
+		err := bootstrao.Migrate(DB)
 		if err != nil {
 			return
 		}
 	case "sqlite3":
-		db := sqlite.Init(config.Cfg.Db.Database, gormLogger)
-		err := bootstrao.Migrate(db)
+		DB := sqlite.Init(config.Cfg.Db.Database, gormLogger)
+		err := bootstrao.Migrate(DB)
 		if err != nil {
 			return
 		}
