@@ -10,7 +10,7 @@ import (
 
 var DB *gorm.DB
 
-func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName string) {
+func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName string, gormLogger logger.Interface) *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		dbUser, dbPassword, dbHost, dbPort, dbName)
 
@@ -18,7 +18,7 @@ func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
-		Logger:                 logger.Default.LogMode(logger.Info),
+		Logger:                 gormLogger,
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // 使用单数表名
 		},
@@ -26,4 +26,6 @@ func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName
 	if err != nil {
 		panic(err)
 	}
+
+	return DB
 }

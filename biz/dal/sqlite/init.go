@@ -11,7 +11,7 @@ import (
 
 var DB *gorm.DB
 
-func Init(Database string) {
+func Init(Database string, gormLogger logger.Interface) *gorm.DB {
 	// 定义数据库文件的路径
 	directory := "data/db"
 	dbFile := fmt.Sprintf("%s/%s.db", directory, Database)
@@ -29,7 +29,7 @@ func Init(Database string) {
 	DB, err = gorm.Open(sqlite.Open(dbFile), &gorm.Config{
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
-		Logger:                 logger.Default.LogMode(logger.Info),
+		Logger:                 gormLogger,
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // 使用单数表名
 		},
@@ -37,4 +37,6 @@ func Init(Database string) {
 	if err != nil {
 		panic(err)
 	}
+
+	return DB
 }
