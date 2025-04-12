@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package test;
 
-import "api.proto";
+import "common/api.proto";
 
 
 option go_package = "hello/test";
