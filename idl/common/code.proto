@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option go_package = "common";
+
+enum Code {
+  Success = 0;
+  Err = 400;
+  DBErr = 401;
+}

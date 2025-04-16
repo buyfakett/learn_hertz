@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package basic.user;
+
+import "common/api.proto";
+import "common/code.proto";
+
+option go_package = "basic/user";
+
+message CreateUserReq {
+  string username = 1 [
+    (api.body) = "username",
+    (api.form) = "username",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];  // 必传字段（proto3 默认规则）
+
+  string password = 2 [
+    (api.body) = "password",
+    (api.form) = "password",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];  // 必传字段
+
+  optional string email = 3 [
+    (api.body) = "email",
+    (api.form) = "email",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];  // 可选字段（可传可不传）
+
+  optional int64 age = 4 [
+    (api.body) = "age",
+    (api.form) = "age",
+    (api.vd) = "$ > 0"
+  ];  // 可选字段（可传可不传）
+}
+
+message CreateUserResp{
+  Code code = 1;
+  string msg = 2;
+}
+
+service CommentHandler {
+  rpc CommentAction(CreateUserReq) returns(CreateUserResp) {
+      option (api.post) = "/api/user/add";
+  }
+}
+
