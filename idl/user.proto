@@ -33,13 +33,13 @@ message CreateUserReq {
   ];  // 可选字段（可传可不传）
 }
 
-message CreateUserResp{
+message CommonUserResp{
   Code code = 1;
   string msg = 2;
 }
 
 service UserHandler {
-  rpc CreateUser(CreateUserReq) returns(CreateUserResp) {
+  rpc CreateUser(CreateUserReq) returns(CommonUserResp) {
       option (api.post) = "/api/user/add";
   }
 }

@@ -24,7 +24,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(user.CreateUserResp)
+	resp := new(user.CommonUserResp)
 
 	u := &dbmodel.User{
 		Username: req.Username,
@@ -34,7 +34,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	hlog.Infof("age: %d, username: %s, email :%s", *req.Age, req.Username, *req.Email)
 
 	if err = dal.CreateUser([]*dbmodel.User{u}); err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CreateUserResp{Code: 400, Msg: err.Error()})
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: 400, Msg: err.Error()})
 		return
 	}
 
