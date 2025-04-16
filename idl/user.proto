@@ -38,8 +38,8 @@ message CreateUserResp{
   string msg = 2;
 }
 
-service CommentHandler {
-  rpc CommentAction(CreateUserReq) returns(CreateUserResp) {
+service UserHandler {
+  rpc CreateUser(CreateUserReq) returns(CreateUserResp) {
       option (api.post) = "/api/user/add";
   }
 }

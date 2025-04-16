@@ -21,7 +21,7 @@ func Register(r *server.Hertz) {
 		_api := root.Group("/api", _apiMw()...)
 		{
 			_user := _api.Group("/user", _userMw()...)
-			_user.POST("/add", append(_commentactionMw(), user.CommentAction)...)
+			_user.POST("/add", append(_createuserMw(), user.CreateUser)...)
 		}
 	}
 }

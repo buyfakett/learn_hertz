@@ -21,7 +21,7 @@ func _userMw() []app.HandlerFunc {
 	return nil
 }
 
-func _commentactionMw() []app.HandlerFunc {
+func _createuserMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
