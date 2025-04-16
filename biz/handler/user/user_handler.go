@@ -7,15 +7,15 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/dbmodel"
-	user "hertz_demo/biz/model/basic/user"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	user "hertz_demo/biz/model/basic/user"
 )
 
-// CommentAction .
+// CreateUser .
 // @router /api/user/add [POST]
-func CommentAction(ctx context.Context, c *app.RequestContext) {
+func CreateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.CreateUserReq
 	err = c.BindAndValidate(&req)
@@ -25,6 +25,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(user.CreateUserResp)
+
 	u := &dbmodel.User{
 		Username: req.Username,
 		Password: req.Password,
