@@ -11,6 +11,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"hertz_demo/biz/dal"
 	"hertz_demo/utils/config"
+	"hertz_demo/utils/jwt"
 	"hertz_demo/utils/logger"
 	"log"
 	"net/http"
@@ -27,6 +28,7 @@ func main() {
 	config.InitConfig()
 	logger.InitLog(config.Cfg.Server.LogLevel)
 	dal.Init()
+	jwt.InitJWT()
 	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)
 	h := server.Default(
 		server.WithHostPorts(port),

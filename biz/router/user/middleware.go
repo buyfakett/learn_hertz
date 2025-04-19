@@ -25,3 +25,33 @@ func _createuserMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _deleteMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deleteuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _queryuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updateMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updateuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

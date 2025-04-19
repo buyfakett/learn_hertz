@@ -1,24 +1,13 @@
-/*
- * Copyright 2022 CloudWeGo Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dal
 
 import (
+	"errors"
+	"github.com/hertz-contrib/jwt"
+	"golang.org/x/crypto/bcrypt"
 	"hertz_demo/biz/dbmodel"
 )
+
+var jwtMiddleware *jwt.HertzJWTMiddleware
 
 func CreateUser(users []*dbmodel.User) error {
 	return DB.Create(users).Error
@@ -32,19 +21,24 @@ func UpdateUser(user *dbmodel.User) error {
 	return DB.Updates(user).Error
 }
 
-func QueryUser(keyword *string, page, pageSize int64) ([]*dbmodel.User, int64, error) {
-	db := DB.Model(dbmodel.User{})
-	if keyword != nil && len(*keyword) != 0 {
-		db = db.Where(DB.Or("name like ?", "%"+*keyword+"%").
-			Or("introduce like ?", "%"+*keyword+"%"))
+func UserLogin(username string, password string) (string, error) {
+	var user dbmodel.User
+
+	// 根据用户名查找用户
+	if err := DB.Where("username = ?", username).First(&user).Error; err != nil {
+		return "", errors.New("用户名不存在")
 	}
-	var total int64
-	if err := db.Count(&total).Error; err != nil {
-		return nil, 0, err
+
+	// 验证密码（假设密码使用 bcrypt 加密存储）
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return "", errors.New("密码错误")
 	}
-	var res []*dbmodel.User
-	if err := db.Limit(int(pageSize)).Offset(int(pageSize * (page - 1))).Find(&res).Error; err != nil {
-		return nil, 0, err
+
+	// 创建 JWT Token
+	token, _, err := jwtMiddleware.TokenGenerator(&user)
+	if err != nil {
+		return "", err
 	}
-	return res, total, nil
+
+	return token, nil
 }

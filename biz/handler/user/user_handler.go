@@ -40,3 +40,54 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, resp)
 }
+
+// DeleteUser .
+// @router /api/user/delete/:user_id [POST]
+func DeleteUser(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.DeleteUserReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.CommonUserResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// UpdateUser .
+// @router /api/user/update/:user_id [POST]
+func UpdateUser(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.UpdateUserReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.CommonUserResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// QueryUser .
+// @router /api/user/get/:user_id [POST]
+func QueryUser(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.LoginUserReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.CommonUserResp)
+
+	//req.Username
+	//req.Password
+
+	c.JSON(consts.StatusOK, resp)
+}
