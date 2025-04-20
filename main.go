@@ -5,10 +5,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/cloudwego/hertz/pkg/network/standard"
 	"hertz_demo/biz/dal"
 	"hertz_demo/utils/config"
 	"hertz_demo/utils/jwt"
@@ -20,9 +16,16 @@ import (
 	"path/filepath"
 	"syscall"
 	"time"
+
+	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/hertz/pkg/network/standard"
 )
 
 func main() {
+	// 初始化JWT组件
+	jwt.InitJWT()
 	// The default listening port is 8888.
 	// You can modify it with server.WithHostPorts().
 	config.InitConfig()

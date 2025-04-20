@@ -106,7 +106,7 @@ service UserHandler {
     option (api.post) = "/api/user/update/:user_id";
   }
 
-  rpc QueryUser(LoginUserReq) returns(CommonUserResp) {
+  rpc UserLogin(LoginUserReq) returns(CommonUserResp) {
     option (api.post) = "/api/user/login";
   }
 }

@@ -29,10 +29,10 @@ type CreateUserReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username string  `protobuf:"bytes,1,opt,name=username,proto3" form:"username" json:"username,omitempty" vd:"(len($) > 0 && len($) < 255)"`                 // 必传字段（proto3 默认规则）
-	Password string  `protobuf:"bytes,2,opt,name=password,proto3" form:"password" form:"password" json:"password,omitempty" vd:"(len($) > 0 && len($) < 255)"` // 必传字段
-	Email    *string `protobuf:"bytes,3,opt,name=email,proto3,oneof" form:"email" json:"email,omitempty" vd:"(len($) > 0 && len($) < 255)"`                    // 可选字段（可传可不传）
-	Age      *int64  `protobuf:"varint,4,opt,name=age,proto3,oneof" form:"age" json:"age,omitempty" vd:"$ > 0"`                                                // 可选字段（可传可不传）
+	Username string  `protobuf:"bytes,1,opt,name=username,proto3" form:"username" json:"username,omitempty" vd:"(len($) > 0 && len($) < 255)"` // 必传字段（proto3 默认规则）
+	Password string  `protobuf:"bytes,2,opt,name=password,proto3" form:"password" json:"password,omitempty" vd:"(len($) > 0 && len($) < 255)"` // 必传字段
+	Email    *string `protobuf:"bytes,3,opt,name=email,proto3,oneof" form:"email" json:"email,omitempty" vd:"(len($) > 0 && len($) < 255)"`    // 可选字段（可传可不传）
+	Age      *int64  `protobuf:"varint,4,opt,name=age,proto3,oneof" form:"age" json:"age,omitempty" vd:"$ > 0"`                                // 可选字段（可传可不传）
 }
 
 func (x *CreateUserReq) Reset() {
@@ -412,8 +412,8 @@ var file_user_proto_rawDesc = []byte{
 	0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x6f, 0x6d, 0x6d,
 	0x6f, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x1d, 0xd2, 0xc1, 0x18, 0x19,
 	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x2f, 0x3a, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x12, 0x56, 0x0a, 0x09, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x12, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x75,
+	0x2f, 0x3a, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x12, 0x56, 0x0a, 0x09, 0x55, 0x73, 0x65,
+	0x72, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x75,
 	0x73, 0x65, 0x72, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71,
 	0x1a, 0x1a, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x6f,
 	0x6d, 0x6d, 0x6f, 0x6e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x13, 0xd2, 0xc1,
@@ -449,11 +449,11 @@ var file_user_proto_depIdxs = []int32{
 	0, // 1: basic.user.UserHandler.CreateUser:input_type -> basic.user.CreateUserReq
 	1, // 2: basic.user.UserHandler.DeleteUser:input_type -> basic.user.DeleteUserReq
 	2, // 3: basic.user.UserHandler.UpdateUser:input_type -> basic.user.UpdateUserReq
-	4, // 4: basic.user.UserHandler.QueryUser:input_type -> basic.user.LoginUserReq
+	4, // 4: basic.user.UserHandler.UserLogin:input_type -> basic.user.LoginUserReq
 	3, // 5: basic.user.UserHandler.CreateUser:output_type -> basic.user.CommonUserResp
 	3, // 6: basic.user.UserHandler.DeleteUser:output_type -> basic.user.CommonUserResp
 	3, // 7: basic.user.UserHandler.UpdateUser:output_type -> basic.user.CommonUserResp
-	3, // 8: basic.user.UserHandler.QueryUser:output_type -> basic.user.CommonUserResp
+	3, // 8: basic.user.UserHandler.UserLogin:output_type -> basic.user.CommonUserResp
 	5, // [5:9] is the sub-list for method output_type
 	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

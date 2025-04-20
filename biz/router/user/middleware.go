@@ -3,55 +3,45 @@
 package user
 
 import (
+	"hertz_demo/utils/jwt"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
 func rootMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _apiMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _userMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _createuserMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _deleteMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _deleteuserMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _queryuserMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _updateMw() []app.HandlerFunc {
-	// your code...
 	return nil
 }
 
 func _updateuserMw() []app.HandlerFunc {
-	// your code...
 	return nil
+}
+
+func _userloginMw() []app.HandlerFunc {
+	return []app.HandlerFunc{
+		jwt.JwtMiddleware.MiddlewareFunc(),
+	}
 }

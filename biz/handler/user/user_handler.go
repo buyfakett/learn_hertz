@@ -4,13 +4,16 @@ package user
 
 import (
 	"context"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/dbmodel"
+	user "hertz_demo/biz/model/basic/user"
+	"hertz_demo/biz/model/common"
+	"hertz_demo/utils"
+
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	user "hertz_demo/biz/model/basic/user"
 )
 
 // CreateUser .
@@ -28,13 +31,12 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 
 	u := &dbmodel.User{
 		Username: req.Username,
-		Password: req.Password,
+		Password: utils.MD5(req.Password),
 		Email:    req.Email,
 	}
-	hlog.Infof("age: %d, username: %s, email :%s", *req.Age, req.Username, *req.Email)
 
 	if err = dal.CreateUser([]*dbmodel.User{u}); err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: 400, Msg: err.Error()})
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
 		return
 	}
 
@@ -74,7 +76,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 }
 
 // QueryUser .
-// @router /api/user/get/:user_id [POST]
+// @router /api/user/login [POST]
 func QueryUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.LoginUserReq
@@ -86,8 +88,40 @@ func QueryUser(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(user.CommonUserResp)
 
-	//req.Username
-	//req.Password
+	userData, err := dal.UserLogin(req.Username)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
+		return
+	}
+	hlog.Debugf("userData.Password: %s， utils.MD5(req.Password)：%s", userData.Password, utils.MD5(req.Password))
+	if userData.Password != utils.MD5(req.Password) {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
+		return
+	}
+	// token, _, err := jwt.TokenGenerator(userData)
+	// if err != nil {
+	// 	c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
+	// 	return
+	// }
+
+	// hlog.Infof("token: %s", token)
+
+	// 返回 JWT 给客户端
+	c.JSON(consts.StatusOK, resp)
+}
+
+// UserLogin .
+// @router /api/user/login [POST]
+func UserLogin(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.LoginUserReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.CommonUserResp)
 
 	c.JSON(consts.StatusOK, resp)
 }

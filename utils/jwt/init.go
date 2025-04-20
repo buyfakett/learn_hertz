@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-var jwtMiddleware *jwt.HertzJWTMiddleware
+var JwtMiddleware *jwt.HertzJWTMiddleware
 
 func InitJWT() {
-	jwtMiddleware, _ = jwt.New(&jwt.HertzJWTMiddleware{
+	JwtMiddleware, _ = jwt.New(&jwt.HertzJWTMiddleware{
 		Key:         []byte("your-secret"),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
