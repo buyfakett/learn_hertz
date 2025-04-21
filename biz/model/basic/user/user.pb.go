@@ -149,10 +149,10 @@ type UpdateUserReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username string  `protobuf:"bytes,1,opt,name=username,proto3" form:"username" json:"username,omitempty" vd:"(len($) > 0 && len($) < 255)"`           // 必传字段（proto3 默认规则）
-	Password string  `protobuf:"bytes,2,opt,name=password,proto3" form:"password" json:"password,omitempty" vd:"(len($) > 0 && len($) < 255)"`           // 必传字段
-	Email    *string `protobuf:"bytes,3,opt,name=email,proto3,oneof" form:"email" form:"email" json:"email,omitempty" vd:"(len($) > 0 && len($) < 255)"` // 可选字段（可传可不传）
-	Age      *int64  `protobuf:"varint,4,opt,name=age,proto3,oneof" form:"age" json:"age,omitempty" vd:"$ > 0"`                                          // 可选字段（可传可不传）
+	Username string  `protobuf:"bytes,1,opt,name=username,proto3" form:"username" json:"username,omitempty" vd:"(len($) > 0 && len($) < 255)"`                 // 必传字段（proto3 默认规则）
+	Password string  `protobuf:"bytes,2,opt,name=password,proto3" form:"password" form:"password" json:"password,omitempty" vd:"(len($) > 0 && len($) < 255)"` // 必传字段
+	Email    *string `protobuf:"bytes,3,opt,name=email,proto3,oneof" form:"email" json:"email,omitempty" vd:"(len($) > 0 && len($) < 255)"`                    // 可选字段（可传可不传）
+	Age      *int64  `protobuf:"varint,4,opt,name=age,proto3,oneof" form:"age" json:"age,omitempty" vd:"$ > 0"`                                                // 可选字段（可传可不传）
 }
 
 func (x *UpdateUserReq) Reset() {
