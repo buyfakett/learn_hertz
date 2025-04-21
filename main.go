@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"hertz_demo/biz/dal"
+	"hertz_demo/biz/mw"
 	"hertz_demo/utils/config"
 	"hertz_demo/utils/logger"
 	"log"
@@ -34,6 +35,11 @@ func main() {
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithTransport(standard.NewTransporter),
 	)
+
+	// 排除鉴权的接口路径
+	excludedPaths := []string{"/api/user/login"}
+	// 注册鉴权中间件
+	h.Use(mw.JWTAuthMiddleware(excludedPaths))
 
 	//url := swagger.URL("http://localhost:8888/swagger/doc.json")
 	//h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
