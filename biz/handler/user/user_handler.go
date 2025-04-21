@@ -94,12 +94,12 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.UserLoginResp{Code: common.Code_DBErr, Msg: err.Error()})
+		c.JSON(consts.StatusUnauthorized, &user.UserLoginResp{Code: common.Code_DBErr, Msg: err.Error()})
 		return
 	}
 
 	if userData.Password != utils.MD5(req.Password) {
-		c.JSON(consts.StatusInternalServerError, &user.UserLoginResp{Code: common.Code_PasswordErr, Msg: "密码错误"})
+		c.JSON(consts.StatusUnauthorized, &user.UserLoginResp{Code: common.Code_PasswordErr, Msg: "密码错误"})
 		return
 	}
 	token, _ := utils.GenerateToken(req.Username, req.Password)
