@@ -4,6 +4,7 @@ server:
   log_level: info
 jwt:
   secret: 123qazwsxedc456
+  expire_time: 7
 db:
   type: sqlite3
   database: test
