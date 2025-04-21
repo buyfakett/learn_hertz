@@ -92,6 +92,16 @@ message LoginUserReq {
   ];
 }
 
+message UserLoginResp {
+  Code code = 1;
+  string msg = 2;
+  UserLoginData data = 3;
+}
+
+message UserLoginData {
+  string token = 1;
+}
+
 // 用户处理服务
 service UserHandler {
   rpc CreateUser(CreateUserReq) returns(CommonUserResp) {
@@ -106,7 +116,7 @@ service UserHandler {
     option (api.post) = "/api/user/update/:user_id";
   }
 
-  rpc UserLogin(LoginUserReq) returns(CommonUserResp) {
+  rpc UserLogin(LoginUserReq) returns(UserLoginResp) {
     option (api.post) = "/api/user/login";
   }
 }

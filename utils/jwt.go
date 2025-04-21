@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"hertz_demo/utils/config"
 	"time"
 
@@ -39,11 +40,24 @@ func ParseToken(token string) (*Claims, error) {
 		return jwtSecret, nil
 	})
 
-	if tokenClaims != nil {
-		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
-			return claims, nil
-		}
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, err
+	// 类型断言 + 校验 token 有效性
+	if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+		// 检查 issuer 是否匹配
+		if claims.Issuer != config.Cfg.Server.Name {
+			return nil, fmt.Errorf("invalid issuer")
+		}
+
+		// 检查是否过期
+		if claims.ExpiresAt < time.Now().Unix() {
+			return nil, fmt.Errorf("token is expired")
+		}
+
+		return claims, nil
+	}
+
+	return nil, fmt.Errorf("invalid token")
 }

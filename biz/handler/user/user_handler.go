@@ -4,7 +4,6 @@ package user
 
 import (
 	"context"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/dbmodel"
 	user "hertz_demo/biz/model/basic/user"
@@ -71,6 +70,12 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(user.CommonUserResp)
 
+	//claims, err := utils.ParseToken(token)
+	//if err != nil {
+	//	fmt.Println("token 解析失败:", err)
+	//	return
+	//}
+
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -85,20 +90,25 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(user.CommonUserResp)
+	resp := new(user.UserLoginResp)
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
+		c.JSON(consts.StatusInternalServerError, &user.UserLoginResp{Code: common.Code_DBErr, Msg: err.Error()})
 		return
 	}
-	hlog.Debugf("userData.Password: %s， utils.MD5(req.Password)：%s", userData.Password, utils.MD5(req.Password))
+
 	if userData.Password != utils.MD5(req.Password) {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
+		c.JSON(consts.StatusInternalServerError, &user.UserLoginResp{Code: common.Code_DBErr, Msg: err.Error()})
 		return
 	}
 	token, _ := utils.GenerateToken(req.Username, req.Password)
-	hlog.Debugf("token: %s", token)
+
+	resp.Code = common.Code_Success
+	resp.Msg = "登录成功"
+	resp.Data = &user.UserLoginData{
+		Token: token,
+	}
 
 	c.JSON(consts.StatusOK, resp)
 }
