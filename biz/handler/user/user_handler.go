@@ -4,13 +4,12 @@ package user
 
 import (
 	"context"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/dbmodel"
 	user "hertz_demo/biz/model/basic/user"
 	"hertz_demo/biz/model/common"
 	"hertz_demo/utils"
-
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -75,9 +74,9 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// QueryUser .
+// UserLogin .
 // @router /api/user/login [POST]
-func QueryUser(ctx context.Context, c *app.RequestContext) {
+func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.LoginUserReq
 	err = c.BindAndValidate(&req)
@@ -98,30 +97,8 @@ func QueryUser(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
 		return
 	}
-	// token, _, err := jwt.TokenGenerator(userData)
-	// if err != nil {
-	// 	c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
-	// 	return
-	// }
-
-	// hlog.Infof("token: %s", token)
-
-	// 返回 JWT 给客户端
-	c.JSON(consts.StatusOK, resp)
-}
-
-// UserLogin .
-// @router /api/user/login [POST]
-func UserLogin(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req user.LoginUserReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(user.CommonUserResp)
+	token, _ := utils.GenerateToken(req.Username, req.Password)
+	hlog.Debugf("token: %s", token)
 
 	c.JSON(consts.StatusOK, resp)
 }

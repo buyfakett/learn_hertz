@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"hertz_demo/biz/dal"
 	"hertz_demo/utils/config"
-	"hertz_demo/utils/jwt"
 	"hertz_demo/utils/logger"
 	"log"
 	"net/http"
@@ -24,14 +23,11 @@ import (
 )
 
 func main() {
-	// 初始化JWT组件
-	jwt.InitJWT()
 	// The default listening port is 8888.
 	// You can modify it with server.WithHostPorts().
 	config.InitConfig()
 	logger.InitLog(config.Cfg.Server.LogLevel)
 	dal.Init()
-	jwt.InitJWT()
 	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)
 	h := server.Default(
 		server.WithHostPorts(port),

@@ -33,9 +33,14 @@ type DbConfig struct {
 	Database string `mapstructure:"database"`
 }
 
+type JwtConfig struct {
+	Secret string `mapstructure:"secret"`
+}
+
 type AppConfig struct {
 	Server ServerConfig `mapstructure:"server"`
 	Db     DbConfig     `mapstructure:"db"`
+	Jwt    JwtConfig    `mapstructure:"jwt"`
 }
 
 var Cfg AppConfig
