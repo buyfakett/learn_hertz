@@ -27,12 +27,6 @@ message CreateUserReq {
     (api.form) = "email",
     (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
   ];  // 可选字段
-
-  optional int64 age = 4 [
-    (api.body) = "age",
-    (api.form) = "age",
-    (api.vd) = "($ == nil || $ > 0)"
-  ];  // 可选字段
 }
 
 // 删除用户请求消息
@@ -45,28 +39,27 @@ message DeleteUserReq {
 
 // 更新用户请求消息
 message UpdateUserReq {
-  string username = 1 [
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];
+
+  optional string username = 2 [
     (api.body) = "username",
     (api.form) = "username",
-    (api.vd) = "(len($) > 0 && len($) < 255)"
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
   ];  // 必传字段（proto3 默认规则）
 
-  string password = 2 [
+  optional string password = 3 [
     (api.body) = "password",
     (api.form) = "password",
-    (api.vd) = "(len($) > 0 && len($) < 255)"
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
   ];  // 必传字段
 
-  optional string email = 3 [
+  optional string email = 4 [
     (api.body) = "email",
     (api.form) = "email",
-    (api.vd) = "(len($) > 0 && len($) < 255)"
-  ];  // 可选字段（可传可不传）
-
-  optional int64 age = 4 [
-    (api.body) = "age",
-    (api.form) = "age",
-    (api.vd) = "$ > 0"
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
   ];  // 可选字段（可传可不传）
 }
 
@@ -104,7 +97,7 @@ message UserLoginData {
 // 用户处理服务
 service UserHandler {
   rpc CreateUser(CreateUserReq) returns(CommonUserResp) {
-      option (api.put) = "/api/user/add";
+    option (api.put) = "/api/user/add";
   }
 
   rpc DeleteUser(DeleteUserReq) returns(CommonUserResp) {

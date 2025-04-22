@@ -4,7 +4,6 @@ package user
 
 import (
 	"context"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/dbmodel"
 	user "hertz_demo/biz/model/basic/user"
@@ -78,8 +77,6 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 
 	userId, _ := strconv.Atoi(req.UserId)
 
-	hlog.Debugf("userId: %v", userId)
-
 	if err = dal.DeleteUser(userId); err != nil {
 		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "删除用户失败: " + err.Error()})
 		return
@@ -103,6 +100,67 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(user.CommonUserResp)
 
+	userId, _ := strconv.Atoi(req.UserId)
+
+	// 获取用户信息
+	userData, err := dal.GetUserByID(userId)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "数据库查询错误: " + err.Error(),
+		})
+		return
+	}
+	if userData == nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "用户未找到",
+		})
+		return
+	}
+
+	// 更新字段（只有不为 nil 才会更新）
+	if req.Email != nil {
+		userData.Email = req.Email
+	}
+
+	// 更新用户名或密码等其他字段
+	if req.Username != nil {
+		userData.Username = *req.Username
+		// 先检查用户名是否已存在
+		exist, err := dal.IsUsernameExists(*req.Username)
+		if err != nil {
+			c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+				Code: common.Code_DBErr,
+				Msg:  "检查用户名失败: " + err.Error(),
+			})
+			return
+		}
+		if exist {
+			c.JSON(consts.StatusBadRequest, &user.CommonUserResp{
+				Code: common.Code_AlreadyExists,
+				Msg:  "该用户已存在",
+			})
+			return
+		}
+	}
+	if req.Password != nil {
+		userData.Password = utils.MD5(*req.Password)
+	}
+
+	// 方法保存数据
+	err = dal.UpdateUser(userData)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "更新用户信息失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 返回成功响应
+	resp.Code = common.Code_Success
+	resp.Msg = "用户信息更新成功"
 	c.JSON(consts.StatusOK, resp)
 }
 

@@ -30,6 +30,20 @@ func DeleteUser(userId int) error {
 	return DB.Delete(&user).Error
 }
 
+// GetUserByID 根据用户 ID 获取用户信息
+func GetUserByID(userId int) (*dbmodel.User, error) {
+	var user dbmodel.User
+	err := DB.First(&user, "id = ? AND deleted_at IS NULL", userId).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // 用户不存在时返回 nil
+		}
+		return nil, err // 其他错误
+	}
+	return &user, nil
+}
+
+// UpdateUser 更新用户信息
 func UpdateUser(user *dbmodel.User) error {
 	return DB.Updates(user).Error
 }
