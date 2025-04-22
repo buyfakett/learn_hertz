@@ -3,6 +3,7 @@ package mw
 import (
 	"context"
 	"hertz_demo/utils"
+	"strings"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -13,6 +14,12 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		// 获取请求路径并转换为字符串
 		path := string(c.Request.Path())
+
+		// 如果路径不是 /api 开头的，就跳过中间件
+		if !strings.HasPrefix(path, "/api") {
+			c.Next(ctx)
+			return
+		}
 
 		// 如果路径在排除列表中，则跳过鉴权
 		for _, excludedPath := range excludedPaths {

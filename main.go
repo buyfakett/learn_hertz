@@ -48,23 +48,36 @@ func main() {
 	h.GET("/*filepath", func(c context.Context, ctx *app.RequestContext) {
 		filePath := ctx.Param("filepath")
 
-		// 默认访问根路径，重定向到 index.html
-		if filePath == "/" || filePath == "" {
+		if filePath == "" || filePath == "/" {
 			filePath = "/index.html"
 		}
 
-		// 拼接本地文件路径
 		fullPath := filepath.Join("./static", filePath)
+		indexPath := filepath.Join("./static", "index.html")
 
-		// 判断文件是否存在
+		fullPathExists := true
 		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-			hlog.Warnf("文件不存在: %s", fullPath)
-			ctx.String(http.StatusNotFound, "404 not found")
+			fullPathExists = false
+		}
+
+		indexExists := true
+		if _, err := os.Stat(indexPath); os.IsNotExist(err) {
+			indexExists = false
+		}
+
+		if fullPathExists {
+			ctx.File(fullPath)
 			return
 		}
 
-		// 返回文件
-		ctx.File(fullPath)
+		if indexExists {
+			hlog.Warnf("文件 %s 不存在，使用 index.html 代替", fullPath)
+			ctx.File(indexPath)
+			return
+		}
+
+		hlog.Errorf("文件 %s 和 index.html 都不存在，返回 404", fullPath)
+		ctx.String(http.StatusNotFound, "404 not found")
 	})
 
 	register(h)
