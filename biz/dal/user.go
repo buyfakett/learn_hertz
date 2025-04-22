@@ -2,6 +2,7 @@ package dal
 
 import (
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"hertz_demo/biz/dbmodel"
 )
@@ -17,7 +18,16 @@ func IsUsernameExists(username string) (bool, error) {
 }
 
 func DeleteUser(userId int) error {
-	return DB.Where("id = ?", userId).Delete(&dbmodel.User{}).Error
+	var user dbmodel.User
+	err := DB.First(&user, "id = ? AND deleted_at IS NULL", userId).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return fmt.Errorf("用户不存在或已被删除")
+		}
+		return err
+	}
+
+	return DB.Delete(&user).Error
 }
 
 func UpdateUser(user *dbmodel.User) error {

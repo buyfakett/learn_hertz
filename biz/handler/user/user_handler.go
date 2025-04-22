@@ -85,7 +85,7 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	resp.Code = common.Code_Success
-	resp.Msg = "删除用户成功"
+	resp.Msg = "用户" + req.UserId + "删除成功"
 
 	c.JSON(consts.StatusOK, resp)
 }
