@@ -27,6 +27,23 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(user.CommonUserResp)
 
+	// 先检查用户名是否已存在
+	exist, err := dal.IsUsernameExists(req.Username)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "检查用户名失败: " + err.Error(),
+		})
+		return
+	}
+	if exist {
+		c.JSON(consts.StatusBadRequest, &user.CommonUserResp{
+			Code: common.Code_AlreadyExists,
+			Msg:  "该用户已存在",
+		})
+		return
+	}
+
 	u := &dbmodel.User{
 		Username: req.Username,
 		Password: utils.MD5(req.Password),
@@ -34,9 +51,12 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	}
 
 	if err = dal.CreateUser([]*dbmodel.User{u}); err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: err.Error()})
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "用户新建失败: " + err.Error()})
 		return
 	}
+
+	resp.Code = common.Code_Success
+	resp.Msg = "新建用户成功"
 
 	c.JSON(consts.StatusOK, resp)
 }
@@ -69,12 +89,6 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(user.CommonUserResp)
-
-	//claims, err := utils.ParseToken(token)
-	//if err != nil {
-	//	fmt.Println("token 解析失败:", err)
-	//	return
-	//}
 
 	c.JSON(consts.StatusOK, resp)
 }

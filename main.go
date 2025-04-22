@@ -39,7 +39,7 @@ func main() {
 	)
 
 	// 排除鉴权的接口路径
-	excludedPaths := []string{"/api/user/login"}
+	excludedPaths := []string{"/api/user/login", "/api/user/add"}
 	// 注册鉴权中间件
 	h.Use(mw.JWTAuthMiddleware(excludedPaths))
 

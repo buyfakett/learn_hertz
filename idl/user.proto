@@ -25,14 +25,14 @@ message CreateUserReq {
   optional string email = 3 [
     (api.body) = "email",
     (api.form) = "email",
-    (api.vd) = "(len($) > 0 && len($) < 255)"
-  ];  // 可选字段（可传可不传）
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];  // 可选字段
 
   optional int64 age = 4 [
     (api.body) = "age",
     (api.form) = "age",
-    (api.vd) = "$ > 0"
-  ];  // 可选字段（可传可不传）
+    (api.vd) = "($ == nil || $ > 0)"
+  ];  // 可选字段
 }
 
 // 删除用户请求消息

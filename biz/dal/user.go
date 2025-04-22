@@ -10,6 +10,12 @@ func CreateUser(users []*dbmodel.User) error {
 	return DB.Create(users).Error
 }
 
+func IsUsernameExists(username string) (bool, error) {
+	var count int64
+	err := DB.Model(&dbmodel.User{}).Where("username = ?", username).Count(&count).Error
+	return count > 0, err
+}
+
 func DeleteUser(userId int64) error {
 	return DB.Where("id = ?", userId).Delete(&dbmodel.User{}).Error
 }
