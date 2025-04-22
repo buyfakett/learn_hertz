@@ -4,11 +4,13 @@ package user
 
 import (
 	"context"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/dbmodel"
 	user "hertz_demo/biz/model/basic/user"
 	"hertz_demo/biz/model/common"
 	"hertz_demo/utils"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -73,6 +75,17 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(user.CommonUserResp)
+
+	userId, _ := strconv.Atoi(req.UserId)
+
+	hlog.Debugf("userId: %v", userId)
+
+	if err = dal.DeleteUser(userId); err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "删除用户失败: " + err.Error()})
+		return
+	}
+	resp.Code = common.Code_Success
+	resp.Msg = "删除用户成功"
 
 	c.JSON(consts.StatusOK, resp)
 }

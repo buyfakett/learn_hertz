@@ -16,7 +16,7 @@ func IsUsernameExists(username string) (bool, error) {
 	return count > 0, err
 }
 
-func DeleteUser(userId int64) error {
+func DeleteUser(userId int) error {
 	return DB.Where("id = ?", userId).Delete(&dbmodel.User{}).Error
 }
 

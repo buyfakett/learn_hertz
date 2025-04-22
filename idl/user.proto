@@ -38,8 +38,7 @@ message CreateUserReq {
 // 删除用户请求消息
 message DeleteUserReq {
   string user_id = 1 [
-    (api.body) = "user_id",
-    (api.form) = "user_id",
+    (api.path) = "user_id",
     (api.vd) = "(len($) > 0)"
   ];  // 必传字段
 }
@@ -105,11 +104,11 @@ message UserLoginData {
 // 用户处理服务
 service UserHandler {
   rpc CreateUser(CreateUserReq) returns(CommonUserResp) {
-      option (api.post) = "/api/user/add";
+      option (api.put) = "/api/user/add";
   }
 
   rpc DeleteUser(DeleteUserReq) returns(CommonUserResp) {
-    option (api.post) = "/api/user/delete/:user_id";
+    option (api.delete) = "/api/user/delete/:user_id";
   }
 
   rpc UpdateUser(UpdateUserReq) returns(CommonUserResp) {

@@ -21,11 +21,11 @@ func Register(r *server.Hertz) {
 		_api := root.Group("/api", _apiMw()...)
 		{
 			_user := _api.Group("/user", _userMw()...)
-			_user.POST("/add", append(_createuserMw(), user.CreateUser)...)
+			_user.PUT("/add", append(_createuserMw(), user.CreateUser)...)
 			_user.POST("/login", append(_userloginMw(), user.UserLogin)...)
 			{
 				_delete := _user.Group("/delete", _deleteMw()...)
-				_delete.POST("/:user_id", append(_deleteuserMw(), user.DeleteUser)...)
+				_delete.DELETE("/:user_id", append(_deleteuserMw(), user.DeleteUser)...)
 			}
 			{
 				_update := _user.Group("/update", _updateMw()...)

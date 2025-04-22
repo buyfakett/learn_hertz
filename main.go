@@ -11,16 +11,11 @@ import (
 	"hertz_demo/utils/config"
 	"hertz_demo/utils/logger"
 	"log"
-	"net/http"
-	"os"
 	"os/signal"
-	"path/filepath"
 	"syscall"
 	"time"
 
-	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 )
 
@@ -42,45 +37,10 @@ func main() {
 	excludedPaths := []string{"/api/user/login", "/api/user/add"}
 	// 注册鉴权中间件
 	h.Use(mw.JWTAuthMiddleware(excludedPaths))
+	h.Use(mw.StaticFileMiddleware("./static"))
 
 	//url := swagger.URL("http://localhost:8888/swagger/doc.json")
 	//h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
-
-	// 静态文件服务，匹配所有路径
-	h.GET("/*filepath", func(c context.Context, ctx *app.RequestContext) {
-		filePath := ctx.Param("filepath")
-
-		if filePath == "" || filePath == "/" {
-			filePath = "/index.html"
-		}
-
-		fullPath := filepath.Join("./static", filePath)
-		indexPath := filepath.Join("./static", "index.html")
-
-		fullPathExists := true
-		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-			fullPathExists = false
-		}
-
-		indexExists := true
-		if _, err := os.Stat(indexPath); os.IsNotExist(err) {
-			indexExists = false
-		}
-
-		if fullPathExists {
-			ctx.File(fullPath)
-			return
-		}
-
-		if indexExists {
-			hlog.Debugf("文件 %s 不存在，使用 index.html 代替", fullPath)
-			ctx.File(indexPath)
-			return
-		}
-
-		hlog.Infof("文件 %s 和 index.html 都不存在，返回 404", fullPath)
-		ctx.String(http.StatusNotFound, "404 not found")
-	})
 
 	register(h)
 
