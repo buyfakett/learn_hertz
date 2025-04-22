@@ -1,22 +1,14 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
-
-// 获取默认配置文件绝对路径
-func getDefaultConfigPath() string {
-	_, filename, _, _ := runtime.Caller(0)                            // 获取当前文件路径
-	projectRoot := filepath.Dir(filepath.Dir(filepath.Dir(filename))) // 上溯三级到项目根目录
-	return filepath.Join(projectRoot, "config/default.yaml")
-}
 
 type ServerConfig struct {
 	Port     int    `mapstructure:"port"`
@@ -46,7 +38,7 @@ type AppConfig struct {
 
 var Cfg AppConfig
 
-func InitConfig() {
+func InitConfig(defaultConfigContent []byte) {
 	// 1. 处理命令行参数
 	var configFile string
 	pflag.StringVar(&configFile, "config", "", "Path to custom config file")
@@ -55,12 +47,13 @@ func InitConfig() {
 
 	v := viper.New()
 
-	// 2. 加载默认配置文件
-	defaultConfig := getDefaultConfigPath()
-	v.SetConfigFile(defaultConfig)
-	if err := v.ReadInConfig(); err != nil {
-		fmt.Printf("加载默认配置失败: %v (路径: %s)\n", err, defaultConfig)
-		os.Exit(1)
+	// 2. 加载嵌入的默认配置文件
+	if len(defaultConfigContent) > 0 {
+		v.SetConfigType("yaml")
+		if err := v.ReadConfig(bytes.NewBuffer(defaultConfigContent)); err != nil {
+			fmt.Printf("加载默认配置失败: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	// 3. 加载外部配置文件（如果存在）

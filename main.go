@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/mw"
@@ -23,10 +24,11 @@ import (
 	"github.com/cloudwego/hertz/pkg/network/standard"
 )
 
+//go:embed config/default.yaml
+var defaultConfigContent []byte
+
 func main() {
-	// The default listening port is 8888.
-	// You can modify it with server.WithHostPorts().
-	config.InitConfig()
+	config.InitConfig(defaultConfigContent)
 	logger.InitLog(config.Cfg.Server.LogLevel)
 	dal.Init()
 	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)
