@@ -71,12 +71,12 @@ func main() {
 		}
 
 		if indexExists {
-			hlog.Warnf("文件 %s 不存在，使用 index.html 代替", fullPath)
+			hlog.Debugf("文件 %s 不存在，使用 index.html 代替", fullPath)
 			ctx.File(indexPath)
 			return
 		}
 
-		hlog.Errorf("文件 %s 和 index.html 都不存在，返回 404", fullPath)
+		hlog.Infof("文件 %s 和 index.html 都不存在，返回 404", fullPath)
 		ctx.String(http.StatusNotFound, "404 not found")
 	})
 
