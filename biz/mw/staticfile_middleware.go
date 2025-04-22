@@ -2,8 +2,10 @@ package mw
 
 import (
 	"context"
+	"io"
+	"io/fs"
+	"mime"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -11,11 +13,12 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 )
 
-func StaticFileMiddleware(staticDir string) app.HandlerFunc {
+// StaticFileMiddleware 处理静态文件请求，并支持 fallback 到 index.html（用于 SPA）
+func StaticFileMiddleware(staticFS fs.FS) app.HandlerFunc {
 	return func(c context.Context, ctx *app.RequestContext) {
 		filePath := string(ctx.Path())
 
-		// 跳过 /api 开头的路径
+		// 跳过 API 路由
 		if strings.HasPrefix(filePath, "/api") {
 			ctx.Next(c)
 			return
@@ -25,27 +28,46 @@ func StaticFileMiddleware(staticDir string) app.HandlerFunc {
 			filePath = "/index.html"
 		}
 
-		fullPath := filepath.Join(staticDir, filePath)
-		indexPath := filepath.Join(staticDir, "index.html")
+		fullPath := filepath.Join("static", filePath)
+		indexPath := filepath.Join("static", "index.html")
 
-		// fullPath 是否存在
-		if _, err := os.Stat(fullPath); err == nil {
-			ctx.File(fullPath)
+		// 返回指定路径的文件
+		if serveFileFromFS(ctx, staticFS, fullPath) {
 			ctx.Abort()
 			return
 		}
 
-		// index.html 是否存在
-		if _, err := os.Stat(indexPath); err == nil {
+		// fallback 到 index.html
+		if serveFileFromFS(ctx, staticFS, indexPath) {
 			hlog.Debugf("文件 %s 不存在，使用 index.html 代替", fullPath)
-			ctx.File(indexPath)
 			ctx.Abort()
 			return
 		}
 
-		// 全部找不到
 		hlog.Infof("文件 %s 和 index.html 都不存在，返回 404", fullPath)
 		ctx.String(http.StatusNotFound, "404 not found")
 		ctx.Abort()
 	}
+}
+
+func serveFileFromFS(ctx *app.RequestContext, filesystem fs.FS, path string) bool {
+	file, err := filesystem.Open(path)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		return false
+	}
+
+	// 设置 content-type
+	contentType := mime.TypeByExtension(filepath.Ext(path))
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+	ctx.Response.Header.Set("Content-Type", contentType)
+	ctx.Data(http.StatusOK, contentType, data)
+	return true
 }

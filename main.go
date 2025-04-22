@@ -4,7 +4,7 @@ package main
 
 import (
 	"context"
-	_ "embed"
+	"embed"
 	"fmt"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/mw"
@@ -22,6 +22,9 @@ import (
 //go:embed config/default.yaml
 var defaultConfigContent []byte
 
+//go:embed static/*
+var staticFS embed.FS
+
 func main() {
 	config.InitConfig(defaultConfigContent)
 	logger.InitLog(config.Cfg.Server.LogLevel)
@@ -37,7 +40,8 @@ func main() {
 	excludedPaths := []string{"/api/user/login", "/api/user/add"}
 	// 注册鉴权中间件
 	h.Use(mw.JWTAuthMiddleware(excludedPaths))
-	h.Use(mw.StaticFileMiddleware("./static"))
+	// 注册静态文件中间件
+	h.Use(mw.StaticFileMiddleware(staticFS))
 
 	register(h)
 
