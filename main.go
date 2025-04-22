@@ -39,9 +39,6 @@ func main() {
 	h.Use(mw.JWTAuthMiddleware(excludedPaths))
 	h.Use(mw.StaticFileMiddleware("./static"))
 
-	//url := swagger.URL("http://localhost:8888/swagger/doc.json")
-	//h.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler, url))
-
 	register(h)
 
 	// 捕获 Ctrl+C / kill 等退出信号
