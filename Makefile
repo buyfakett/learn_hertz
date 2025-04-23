@@ -5,4 +5,4 @@ run:
 	go run .
 
 build:
-    /bin/bash -x build.sh
+	/bin/bash -x build.sh
