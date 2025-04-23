@@ -1,6 +1,7 @@
 #!/bin/bash
 RUN_NAME=hertz_service
-mkdir -p output/bin
-cp script/* output 2>/dev/null
-chmod +x output/bootstrap.sh
-go build -o output/bin/${RUN_NAME}
+mkdir -p static/
+if [ -f static/index.html ]; do
+    echo "<h1>hertz service</h1>" > static/index.html
+fi
+go build -ldflags '-w -s' -o ${RUN_NAME}
