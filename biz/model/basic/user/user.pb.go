@@ -268,7 +268,7 @@ type LoginUserReq struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username string `protobuf:"bytes,1,opt,name=Username,proto3" form:"username" form:"username" json:"username,omitempty" vd:"(len($) > 0)"` // 必传字段
+	Username string `protobuf:"bytes,1,opt,name=Username,proto3" form:"username" json:"username,omitempty" vd:"(len($) > 0)"` // 必传字段
 	Password string `protobuf:"bytes,2,opt,name=Password,proto3" form:"password" json:"password,omitempty" vd:"(len($) > 0)"`
 }
 
