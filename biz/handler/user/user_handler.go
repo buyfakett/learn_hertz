@@ -9,6 +9,7 @@ import (
 	user "hertz_demo/biz/model/basic/user"
 	"hertz_demo/biz/model/common"
 	"hertz_demo/utils"
+	"hertz_demo/utils/config"
 	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -119,9 +120,14 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	// 更新字段（只有不为 nil 才会更新）
-	if req.Email != nil {
-		userData.Email = req.Email
+	if userData.Username == config.Cfg.Admin.Username {
+		if userData.Username != config.Cfg.Admin.Username {
+			c.JSON(consts.StatusBadRequest, &user.CommonUserResp{
+				Code: common.Code_DBErr,
+				Msg:  "管理员用户不能修改用户名",
+			})
+			return
+		}
 	}
 
 	// 更新用户名或密码等其他字段
@@ -144,8 +150,13 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 	}
+	// 更新字段（只有不为 nil 才会更新）
 	if req.Password != nil {
 		userData.Password = utils.MD5(*req.Password)
+	}
+
+	if req.Email != nil {
+		userData.Email = req.Email
 	}
 
 	// 方法保存数据

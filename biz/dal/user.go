@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"hertz_demo/biz/dbmodel"
+	"hertz_demo/utils/config"
 )
 
 func CreateUser(users []*dbmodel.User) error {
@@ -19,12 +20,14 @@ func IsUsernameExists(username string) (bool, error) {
 
 func DeleteUser(userId int) error {
 	var user dbmodel.User
-	err := DB.First(&user, "id = ?", userId).Error
-	if err != nil {
+	if err := DB.First(&user, "id = ?", userId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("用户不存在或已被删除")
 		}
 		return err
+	}
+	if user.Username == config.Cfg.Admin.Username {
+		return fmt.Errorf("%s 用户为管理员,不允许被删除", config.Cfg.Admin.Username)
 	}
 
 	return DB.Delete(&user).Error
@@ -33,8 +36,7 @@ func DeleteUser(userId int) error {
 // GetUserByID 根据用户 ID 获取用户信息
 func GetUserByID(userId int) (*dbmodel.User, error) {
 	var user dbmodel.User
-	err := DB.First(&user, "id = ?", userId).Error
-	if err != nil {
+	if err := DB.First(&user, "id = ?", userId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil // 用户不存在时返回 nil
 		}
