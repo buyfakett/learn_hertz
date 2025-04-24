@@ -34,11 +34,17 @@ type AuthConfig struct {
 	ExcludedPaths []string `mapstructure:"excludedPaths"`
 }
 
+type AdminConfig struct {
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+}
+
 type AppConfig struct {
 	Server ServerConfig `mapstructure:"server"`
 	Db     DbConfig     `mapstructure:"db"`
 	Jwt    JwtConfig    `mapstructure:"jwt"`
 	Auth   AuthConfig   `mapstructure:"auth"`
+	Admin  AdminConfig  `mapstructure:"admin"`
 }
 
 var Cfg AppConfig

@@ -1,12 +1,39 @@
 package bootstrao
 
 import (
-	"gorm.io/gorm"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dbmodel"
+	"hertz_demo/utils"
+	"hertz_demo/utils/config"
+
+	"gorm.io/gorm"
 )
 
 func Migrate(db *gorm.DB) error {
-	return db.AutoMigrate(
+	// 自动迁移表结构
+	if err := db.AutoMigrate(
 		&dbmodel.User{},
-	)
+	); err != nil {
+		return err
+	}
+
+	// 插入初始化账号
+	var count int64
+	if err := db.Model(&dbmodel.User{}).Where("username = ?", config.Cfg.Admin.Username).Count(&count).Error; err != nil {
+		return err
+	}
+
+	// 如果不存在则创建
+	if count == 0 {
+		hlog.Infof("%s 用户不存在，密码为:%s", config.Cfg.Admin.Username, config.Cfg.Admin.Password)
+		adminUser := &dbmodel.User{
+			Username: config.Cfg.Admin.Username,
+			Password: utils.MD5(config.Cfg.Admin.Password),
+		}
+		if err := db.Create(adminUser).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -7,6 +7,9 @@ auth:
     - /api/user/login
     - /api/user/add
     - /api/ping
+admin:
+  username: admin
+  password: admin123456
 jwt:
   secret: 123qazwsxedc456
   expire_time: 7
