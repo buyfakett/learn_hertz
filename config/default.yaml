@@ -2,6 +2,11 @@ server:
   port: 8888
   name: learn_hertz
   log_level: info
+auth:
+  excludedPaths:
+    - /api/user/login
+    - /api/user/add
+    - /api/ping
 jwt:
   secret: 123qazwsxedc456
   expire_time: 7

@@ -36,10 +36,8 @@ func main() {
 		server.WithTransport(standard.NewTransporter),
 	)
 
-	// 排除鉴权的接口路径
-	excludedPaths := []string{"/api/user/login", "/api/user/add"}
 	// 注册鉴权中间件
-	h.Use(mw.JWTAuthMiddleware(excludedPaths))
+	h.Use(mw.JWTAuthMiddleware(config.Cfg.Auth.ExcludedPaths))
 	// 注册静态文件中间件
 	h.Use(mw.StaticFileMiddleware(staticFS))
 
