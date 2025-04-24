@@ -5,6 +5,7 @@ import (
 	"hertz_demo/utils/config"
 	"time"
 
+	"github.com/cloudwego/hertz/pkg/app"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -48,16 +49,30 @@ func ParseToken(token string) (*Claims, error) {
 	if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
 		// 检查 issuer 是否匹配
 		if claims.Issuer != config.Cfg.Server.Name {
-			return nil, fmt.Errorf("invalid issuer")
+			return nil, fmt.Errorf("issuer 不匹配")
 		}
 
 		// 检查是否过期
 		if claims.ExpiresAt < time.Now().Unix() {
-			return nil, fmt.Errorf("token is expired")
+			return nil, fmt.Errorf("token 已过期")
 		}
 
 		return claims, nil
 	}
 
-	return nil, fmt.Errorf("invalid token")
+	return nil, fmt.Errorf("token 不合法")
+}
+
+func GetUsernameFromContext(c *app.RequestContext) (string, error) {
+	claimsInterface, exists := c.Get("claims")
+	if !exists {
+		return "", fmt.Errorf("未找到用户信息")
+	}
+
+	claims, ok := claimsInterface.(*Claims)
+	if !ok {
+		return "", fmt.Errorf("用户信息格式错误")
+	}
+
+	return claims.Username, nil
 }

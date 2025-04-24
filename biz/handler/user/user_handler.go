@@ -76,6 +76,12 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(user.CommonUserResp)
 
+	tokenUsername, _ := utils.GetUsernameFromContext(c)
+	if tokenUsername != config.Cfg.Admin.Username {
+		c.JSON(consts.StatusUnauthorized, &user.CommonUserResp{Code: common.Code_Err, Msg: "非管理员账号没有权限"})
+		return
+	}
+
 	userId, _ := strconv.Atoi(req.UserId)
 
 	if err = dal.DeleteUser(userId); err != nil {
@@ -120,10 +126,16 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	tokenUsername, _ := utils.GetUsernameFromContext(c)
+	if tokenUsername != userData.Username {
+		c.JSON(consts.StatusUnauthorized, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能修改别人的账号"})
+		return
+	}
+
 	if userData.Username == config.Cfg.Admin.Username {
 		if userData.Username != config.Cfg.Admin.Username {
 			c.JSON(consts.StatusBadRequest, &user.CommonUserResp{
-				Code: common.Code_DBErr,
+				Code: common.Code_Err,
 				Msg:  "管理员用户不能修改用户名",
 			})
 			return

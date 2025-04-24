@@ -45,7 +45,7 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 		if err != nil {
 			c.JSON(consts.StatusUnauthorized, map[string]interface{}{
 				"code":    consts.StatusUnauthorized,
-				"message": "token不合法",
+				"message": err.Error(),
 			})
 			c.Abort() // 终止后续处理
 			return
