@@ -15,12 +15,12 @@ import (
 
 // StaticFileMiddleware 处理静态文件请求，并支持 fallback 到 index.html（用于 SPA）
 func StaticFileMiddleware(staticFS fs.FS) app.HandlerFunc {
-	return func(c context.Context, ctx *app.RequestContext) {
-		filePath := string(ctx.Path())
+	return func(ctx context.Context, c *app.RequestContext) {
+		filePath := string(c.Path())
 
 		// 跳过 API 路由
 		if strings.HasPrefix(filePath, "/api") {
-			ctx.Next(c)
+			c.Next(ctx)
 			return
 		}
 
@@ -32,30 +32,35 @@ func StaticFileMiddleware(staticFS fs.FS) app.HandlerFunc {
 		indexPath := filepath.Join("static", "index.html")
 
 		// 返回指定路径的文件
-		if serveFileFromFS(ctx, staticFS, fullPath) {
-			ctx.Abort()
+		if serveFileFromFS(c, staticFS, fullPath) {
+			c.Abort()
 			return
 		}
 
 		// fallback 到 index.html
-		if serveFileFromFS(ctx, staticFS, indexPath) {
+		if serveFileFromFS(c, staticFS, indexPath) {
 			hlog.Debugf("文件 %s 不存在，使用 index.html 代替", fullPath)
-			ctx.Abort()
+			c.Abort()
 			return
 		}
 
 		hlog.Infof("文件 %s 和 index.html 都不存在，返回 404", fullPath)
-		ctx.String(http.StatusNotFound, "404 not found")
-		ctx.Abort()
+		c.String(http.StatusNotFound, "404 not found")
+		c.Abort()
 	}
 }
 
-func serveFileFromFS(ctx *app.RequestContext, filesystem fs.FS, path string) bool {
+func serveFileFromFS(c *app.RequestContext, filesystem fs.FS, path string) bool {
 	file, err := filesystem.Open(path)
 	if err != nil {
 		return false
 	}
-	defer file.Close()
+	defer func(file fs.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	data, err := io.ReadAll(file)
 	if err != nil {
@@ -67,7 +72,7 @@ func serveFileFromFS(ctx *app.RequestContext, filesystem fs.FS, path string) boo
 	if contentType == "" {
 		contentType = "application/octet-stream"
 	}
-	ctx.Response.Header.Set("Content-Type", contentType)
-	ctx.Data(http.StatusOK, contentType, data)
+	c.Response.Header.Set("Content-Type", contentType)
+	c.Data(http.StatusOK, contentType, data)
 	return true
 }
