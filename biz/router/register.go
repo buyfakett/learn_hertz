@@ -4,7 +4,6 @@ package router
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
-	test "hertz_demo/biz/router/test"
 	user "hertz_demo/biz/router/user"
 )
 
@@ -12,6 +11,4 @@ import (
 func GeneratedRegister(r *server.Hertz) {
 	//INSERT_POINT: DO NOT DELETE THIS LINE!
 	user.Register(r)
-
-	test.Register(r)
 }
