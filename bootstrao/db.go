@@ -19,7 +19,7 @@ func Migrate(db *gorm.DB) error {
 
 	// 插入初始化账号
 	var count int64
-	if err := db.Model(&dbmodel.User{}).Where("username = ?", config.Cfg.Admin.Username).Count(&count).Error; err != nil {
+	if err := db.Model(&dbmodel.User{}).Where("id = ?", 1).Count(&count).Error; err != nil {
 		return err
 	}
 
