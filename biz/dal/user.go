@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"hertz_demo/biz/dbmodel"
-	"hertz_demo/utils/config"
 )
 
 func CreateUser(users []*dbmodel.User) error {
@@ -25,9 +24,6 @@ func DeleteUser(userId int) error {
 			return fmt.Errorf("用户不存在或已被删除")
 		}
 		return err
-	}
-	if user.Username == config.Cfg.Admin.Username {
-		return fmt.Errorf("%s 用户为管理员,不允许被删除", config.Cfg.Admin.Username)
 	}
 
 	return DB.Delete(&user).Error
