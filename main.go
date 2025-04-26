@@ -6,11 +6,13 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/mw"
 	"hertz_demo/utils/config"
 	"hertz_demo/utils/logger"
 	"log"
+	"net"
 	"os/signal"
 	"syscall"
 	"time"
@@ -35,6 +37,23 @@ func main() {
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithTransport(standard.NewTransporter),
 	)
+
+	// 启动时打印完整访问地址
+	h.OnRun = append(h.OnRun, func(ctx context.Context) error {
+		// 遍历所有接口地址，找到第一个非回环 IPv4
+		addrs, _ := net.InterfaceAddrs() // :contentReference[oaicite:0]{index=0}
+		hlog.Debugf("🚀 服务启动在 http://localhost:%d", config.Cfg.Server.Port)
+		for _, addr := range addrs {
+			if ipNet, ok := addr.(*net.IPNet); ok &&
+				!ipNet.IP.IsLoopback() &&
+				ipNet.IP.To4() != nil {
+				ip := ipNet.IP.String()
+				hlog.Infof("🚀 服务启动在 http://%s:%d", ip, config.Cfg.Server.Port)
+				break
+			}
+		}
+		return nil
+	})
 
 	// 注册鉴权中间件
 	h.Use(mw.JWTAuthMiddleware(config.Cfg.Auth.ExcludedPaths))
