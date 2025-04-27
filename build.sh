@@ -74,8 +74,12 @@ for platform in "${platforms[@]}"; do
         go build -ldflags '-w -s' -o "$OUTPUT_FILE"
 
     # 压缩，仅包含可执行文件本身
-    tar -cJf "${OUTPUT_FILE}.tar.xz" -C "$(dirname "$OUTPUT_FILE")" "$(basename "$OUTPUT_FILE")"
-    echo "生成文件: ${OUTPUT_FILE}.tar.xz"
+    if [ -f $OUTPUT_FILE ]; then
+      tar -cJf "${OUTPUT_FILE}.tar.xz" -C "$(dirname "$OUTPUT_FILE")" "$(basename "$OUTPUT_FILE")"
+      echo "生成文件: ${OUTPUT_FILE}.tar.xz"
+    else
+      echo "编译错误"
+    fi
 done
 
 # 生成所有 dist/release 下文件的 md5
