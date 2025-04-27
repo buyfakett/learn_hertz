@@ -13,6 +13,7 @@ ARG repo_url=https://github.com/${AUTHOR}/${FRONTEND}
 ARG branch_name=main
 WORKDIR /app
 RUN set -eux; \
+    apk add --no-cache git; \
     git clone --depth 1 --branch "$branch_name" "$repo_url"; \
     cd ${FRONTEND}; \
     npm i -g pnpm; \

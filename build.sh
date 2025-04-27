@@ -32,6 +32,8 @@ if ! command -v md5sum &>/dev/null; then
     apt update && apt install -y coreutils
 fi
 
+apt update && apt install gcc-aarch64-linux-gnu
+
 # 下载依赖
 go mod download
 
