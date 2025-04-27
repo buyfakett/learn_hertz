@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 WORKDIR=$(pwd)
 
@@ -37,22 +38,19 @@ apt update && apt install -y gcc-aarch64-linux-gnu
 # 下载依赖
 go mod download
 
-# 定义多平台编译目标
-# platforms=(
-#     "linux/amd64"
-#     "linux/arm64"
-#     "darwin/amd64"
-#     "darwin/arm64"
-#     "windows/amd64"
-#     "windows/arm64"
-# )
-
-platforms=(
-    "linux/amd64"
-    "linux/arm64"
-    "darwin/amd64"
-    "darwin/arm64"
-)
+# —— 下面这一段是唯一改动 ——
+# 定义多平台编译目标：如果外部传了 GOOS/GOARCH，就只编译这一种，否则按原来四个平台
+if [ -n "$GOOS" ] && [ -n "$GOARCH" ]; then
+    platforms=("$GOOS/$GOARCH")
+else
+    platforms=(
+        "linux/amd64"
+        "linux/arm64"
+        "darwin/amd64"
+        "darwin/arm64"
+    )
+fi
+# —— 改动结束 ——
 
 # 主构建流程
 mkdir -p dist/release
@@ -79,6 +77,7 @@ for platform in "${platforms[@]}"; do
       echo "生成文件: ${OUTPUT_FILE}.tar.xz"
     else
       echo "编译错误"
+      exit 1
     fi
 done
 

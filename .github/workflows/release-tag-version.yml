@@ -13,7 +13,6 @@ concurrency:
 
 jobs:
   binary:
-    # 使用 matrix 针对不同架构和操作系统选择不同的 runner
     strategy:
       matrix:
         include:
@@ -31,40 +30,32 @@ jobs:
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
     permissions:
-      packages: write  # 用于发布到 ghcr.io
+      packages: write # 发布到 ghcr.io
     steps:
       - uses: actions/checkout@v4
+
       - name: Fetch tags
-        run: git fetch --unshallow --quiet --tags --force
+        run: git fetch --unshallow --tags --quiet
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           check-latest: true
-      - name: Build for ${{ matrix.goos }}/${{ matrix.goarch }}
+
+      - name: Run build.sh (${{ matrix.goos }}/${{ matrix.goarch }})
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 1
         run: |
-          echo "编译: $GOOS-$GOARCH..."
-          mkdir -p dist/release
-          BINARY=hertz_service_${GOOS}_${GOARCH}
-          [ "$GOOS" = "windows" ] && BINARY="$BINARY.exe"
-          go build -ldflags '-w -s' -o dist/release/$BINARY
-          echo "压缩: $BINARY.tar.xz"
-          tar -cJf dist/release/${BINARY}.tar.xz -C dist/release ${BINARY}
-      - name: Generate checksums
-        run: |
-          echo "生成 MD5 校验..."
-          for f in dist/release/*; do
-            [ -f "$f" ] && md5sum "$f" > "$f.md5"
-          done
-      - name: Create GitHub release assets
-        run: |
-          gh release upload ${{ github.ref_name }} dist/release/* --clobber
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Create GitHub Release Assets
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          gh release upload ${{ github.ref_name }} dist/release/* --clobber
   docker-rootful:
     runs-on: ubuntu-latest
     permissions:
