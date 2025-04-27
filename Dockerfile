@@ -12,7 +12,7 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 
 # 前端
-FROM node:22-alpine as webui
+FROM node:22-alpine AS webui
 ARG AUTHOR
 ARG FRONTEND
 ARG repo_url=https://github.com/${AUTHOR}/${FRONTEND}
@@ -28,7 +28,7 @@ RUN set -eux; \
     mv dist ../static
 
 # 后端
-FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 ARG ALPINE_VERSION
 ARG GO_VERSION
@@ -43,11 +43,10 @@ COPY --from=webui /app/static ./static
 
 # 根据平台推导出 GOOS 和 GOARCH
 RUN set -eux; \
-    apk add --no-cache gcc g++ make libc-dev; \
     TARGETOS=${TARGETOS:-linux}; \
     TARGETARCH=${TARGETARCH:-amd64}; \
     echo "Building for TARGETOS=${TARGETOS} TARGETARCH=${TARGETARCH}"; \
-    CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -o /app/${SERVER_NAME}
+    CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -o /app/${SERVER_NAME}
 
 # 最小编译
 FROM alpine:${ALPINE_VERSION} AS final

@@ -32,7 +32,6 @@ if [ "$(uname)" = "Linux" ]; then
   if ! command -v md5sum &>/dev/null; then
       sudo apt update && sudo apt install -y coreutils
   fi
-  sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu
 fi
 
 # 下载依赖
@@ -56,22 +55,16 @@ for platform in "${platforms[@]}"; do
     GOOS=${platform%/*}
     GOARCH=${platform#*/}
 
-    # 决定是否启用 CGO：仅本机环境启用，否则禁用以支持交叉编译
-    HOST_OS=$(go env GOHOSTOS)
-    HOST_ARCH=$(go env GOHOSTARCH)
-    if [ "$GOOS" = "$HOST_OS" ] && [ "$GOARCH" = "$HOST_ARCH" ]; then
-        CGO=1
-    else
-        CGO=0
-    fi
+    # 使用纯Go的SQLite实现，禁用CGO
+    CGO_ENABLED=0
 
     # 生成文件名
     BINARY="${SERVER_NAME}_${GOOS}_${GOARCH}"
     [ "$GOOS" = "windows" ] && BINARY="${BINARY}.exe"
     OUTPUT="dist/release/${BINARY}"
 
-    echo "编译：${GOOS}-${GOARCH} (CGO_ENABLED=$CGO)..."
-    env GOOS="$GOOS" GOARCH="$GOARCH" CGO_ENABLED="$CGO" \
+    echo "编译：${GOOS}-${GOARCH} (CGO_ENABLED=$CGO_ENABLED)..."
+    env GOOS="$GOOS" GOARCH="$GOARCH" CGO_ENABLED="$CGO_ENABLED" \
         go build -ldflags '-w -s' -o "$OUTPUT"
 
     if [ -f "$OUTPUT" ]; then

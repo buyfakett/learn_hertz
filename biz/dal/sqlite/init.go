@@ -2,11 +2,13 @@ package sqlite
 
 import (
 	"fmt"
-	"gorm.io/driver/sqlite"
+	"os"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"os"
+
+	"github.com/glebarez/sqlite" // 这是基于modernc.org/sqlite的纯Go GORM驱动
 )
 
 var DB *gorm.DB
