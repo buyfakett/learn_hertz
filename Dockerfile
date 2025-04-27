@@ -50,4 +50,4 @@ ARG SERVER_NAME
 COPY --from=builder /app/${SERVER_NAME} /app/${SERVER_NAME}
 
 EXPOSE 8888
-ENTRYPOINT ["/bin/sh", "-c", "/app/hertz_service"]
+ENTRYPOINT ["/app/hertz_service"]

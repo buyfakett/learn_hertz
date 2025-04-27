@@ -84,8 +84,15 @@ for platform in "${platforms[@]}"; do
 
 done
 
-# 生成 MD5 校验文件
-for f in dist/release/*; do
-    [ -f "$f" ] || continue
-    md5sum "$f" > "$f.md5"
-done
+# 生成 MD5 校验文件：macOS 与 Linux 区分处理
+if [ "$(uname)" = "Darwin" ]; then
+    for f in dist/release/*; do
+        [ -f "$f" ] || continue
+        md5 -r "$f" > "$f.md5"
+    done
+else
+    for f in dist/release/*; do
+        [ -f "$f" ] || continue
+        md5sum "$f" > "$f.md5"
+    done
+fi
