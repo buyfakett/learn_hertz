@@ -5,6 +5,13 @@ ARG AUTHOR=buyfakett
 ARG FRONTEND=learn_modern
 ARG SERVER_NAME=hertz_service
 
+# 支持多平台构建
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
 # 前端
 FROM --platform=${PLATFORM} node:22-alpine as webui
 ARG AUTHOR
@@ -37,10 +44,8 @@ COPY --from=webui /app/static ./static
 # 根据平台推导出 GOOS 和 GOARCH
 RUN set -eux; \
     apk add --no-cache gcc g++ make libc-dev; \
-    GOOS=$(echo "${PLATFORM}" | cut -d'/' -f1); \
-    GOARCH=$(echo "${PLATFORM}" | cut -d'/' -f2); \
-    echo "Building for GOOS=${GOOS} GOARCH=${GOARCH}"; \
-    CGO_ENABLED=1 GOOS=${GOOS} GOARCH=${GOARCH} go build -ldflags="-s -w" -o /app/${SERVER_NAME}
+    echo "Building for TARGETOS=${TARGETOS} TARGETARCH=${TARGETARCH}"; \
+    CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -o /app/${SERVER_NAME}
 
 # 最小编译
 FROM --platform=${PLATFORM} alpine:${ALPINE_VERSION} AS final
