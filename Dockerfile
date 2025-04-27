@@ -44,8 +44,8 @@ COPY --from=webui /app/static ./static
 # 根据平台推导出 GOOS 和 GOARCH
 RUN set -eux; \
     apk add --no-cache gcc g++ make libc-dev; \
-    [ "$TARGETPLATFORM" = "linux/amd64" ] && TARGETOS=linux TARGETARCH=amd64; \
-    [ "$TARGETPLATFORM" = "linux/arm64" ] && TARGETOS=linux TARGETARCH=arm64; \
+    TARGETOS=${TARGETOS:-linux}; \
+    TARGETARCH=${TARGETARCH:-amd64}; \
     echo "Building for TARGETOS=${TARGETOS} TARGETARCH=${TARGETARCH}"; \
     CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-s -w" -o /app/${SERVER_NAME}
 
