@@ -13,24 +13,56 @@ concurrency:
 
 jobs:
   binary:
-    runs-on: ubuntu-latest
+    # 使用 matrix 针对不同架构和操作系统选择不同的 runner
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            runner: ubuntu-latest
+          - goos: linux
+            goarch: arm64
+            runner: ubuntu-latest
+          - goos: darwin
+            goarch: amd64
+            runner: macos-latest
+          - goos: darwin
+            goarch: arm64
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
     permissions:
-      packages: write # to publish to ghcr.io
+      packages: write  # 用于发布到 ghcr.io
     steps:
       - uses: actions/checkout@v4
-      - run: git fetch --unshallow --quiet --tags --force
-      - uses: actions/setup-go@v5
+      - name: Fetch tags
+        run: git fetch --unshallow --quiet --tags --force
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           check-latest: true
-      - run: make build
-      - name: Install GH CLI
-        uses: dev-hanz-ops/install-gh-cli-action@v0.2.1
-        with:
-          gh-cli-version: 2.71.2
-      - name: create github release
+      - name: Build for ${{ matrix.goos }}/${{ matrix.goarch }}
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 1
         run: |
-          gh release create ${{ github.ref_name }} --title ${{ github.ref_name }} --notes-from-tag dist/release/*
+          echo "编译: $GOOS-$GOARCH..."
+          mkdir -p dist/release
+          BINARY=hertz_service_${GOOS}_${GOARCH}
+          [ "$GOOS" = "windows" ] && BINARY="$BINARY.exe"
+          go build -ldflags '-w -s' -o dist/release/$BINARY
+          echo "压缩: $BINARY.tar.xz"
+          tar -cJf dist/release/${BINARY}.tar.xz -C dist/release ${BINARY}
+      - name: Generate checksums
+        run: |
+          echo "生成 MD5 校验..."
+          for f in dist/release/*; do
+            [ -f "$f" ] && md5sum "$f" > "$f.md5"
+          done
+      - name: Create GitHub release assets
+        run: |
+          gh release upload ${{ github.ref_name }} dist/release/* --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
   docker-rootful:
