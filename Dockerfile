@@ -6,7 +6,7 @@ ARG FRONTEND=learn_modern
 ARG SERVER_NAME=hertz_service
 
 # 前端
-FROM node:22 as webui
+FROM --platform=${PLATFORM} node:22-alpine as webui
 ARG AUTHOR
 ARG FRONTEND
 ARG repo_url=https://github.com/${AUTHOR}/${FRONTEND}

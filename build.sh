@@ -68,7 +68,7 @@ for platform in "${platforms[@]}"; do
 
     # 编译
     echo "编译中: ${GOOS}-${GOARCH}..."
-    env GOOS="$GOOS" GOARCH="$GOARCH" \
+    env GOOS="$GOOS" GOARCH="$GOARCH" CGO_ENABLED=1 \
         go build -ldflags '-w -s' -o "$OUTPUT_FILE"
 
     # 压缩，仅包含可执行文件本身
