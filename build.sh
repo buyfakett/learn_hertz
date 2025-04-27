@@ -1,7 +1,7 @@
 #!/bin/bash
-set -e
 
 WORKDIR=$(pwd)
+
 SERVER_NAME=hertz_service
 
 # 创建静态文件目录及默认页面
@@ -23,69 +23,55 @@ mv dist ../static
 cd ${WORKDIR}/
 rm -rf ${WORKDIR}/${FRONTEND}/
 
-# 检查依赖工具，只在 Linux 上执行
-if [ "$(uname)" = "Linux" ]; then
-  # 使用 sudo 以避免权限问题
-  if ! command -v xz &> /dev/null; then
-      sudo apt update && sudo apt install -y xz-utils
-  fi
-  if ! command -v md5sum &>/dev/null; then
-      sudo apt update && sudo apt install -y coreutils
-  fi
+# 检查依赖工具
+if ! command -v xz &> /dev/null; then
+    apt update && apt install -y xz-utils
+fi
+
+if ! command -v md5sum &>/dev/null; then
+    apt update && apt install -y coreutils
 fi
 
 # 下载依赖
 go mod download
 
-# —— 定义多平台编译目标 ——
-# 接受外部 GOOS/GOARCH，否则默认四平台
-if [ -n "$GOOS" ] && [ -n "$GOARCH" ]; then
-    platforms=("$GOOS/$GOARCH")
-else
-    platforms=(
-        "linux/amd64"
-        "linux/arm64"
-        "darwin/amd64"
-        "darwin/arm64"
-    )
-fi
-# —— 编译流程 ——
+# 定义多平台编译目标
+platforms=(
+    "linux/amd64"
+    "linux/arm64"
+    "darwin/amd64"
+    "darwin/arm64"
+    "windows/amd64"
+    "windows/arm64"
+)
+
+# 主构建流程
 mkdir -p dist/release
 for platform in "${platforms[@]}"; do
+    # 分割平台信息
     GOOS=${platform%/*}
     GOARCH=${platform#*/}
-
-    # 使用纯Go的SQLite实现，禁用CGO
-    CGO_ENABLED=0
 
     # 生成文件名
     BINARY="${SERVER_NAME}_${GOOS}_${GOARCH}"
     [ "$GOOS" = "windows" ] && BINARY="${BINARY}.exe"
-    OUTPUT="dist/release/${BINARY}"
 
-    echo "编译：${GOOS}-${GOARCH} (CGO_ENABLED=$CGO_ENABLED)..."
-    env GOOS="$GOOS" GOARCH="$GOARCH" CGO_ENABLED="$CGO_ENABLED" \
-        go build -ldflags '-w -s' -o "$OUTPUT"
+    # 目标路径
+    OUTPUT_FILE="dist/release/${BINARY}"
 
-    if [ -f "$OUTPUT" ]; then
-        echo "打包：${BINARY}.tar.xz"
-        tar -cJf "${OUTPUT}.tar.xz" -C "$(dirname "$OUTPUT")" "$(basename "$OUTPUT")"
-    else
-        echo "错误：${OUTPUT} 未生成" >&2
-        exit 1
-    fi
+    # 编译
+    echo "编译中: ${GOOS}-${GOARCH}..."
+    env GOOS="$GOOS" GOARCH="$GOARCH" \
+        go build -ldflags '-w -s' -o "$OUTPUT_FILE"
 
+    # 压缩，仅包含可执行文件本身
+    tar -cJf "${OUTPUT_FILE}.tar.xz" -C "$(dirname "$OUTPUT_FILE")" "$(basename "$OUTPUT_FILE")"
+    echo "生成文件: ${OUTPUT_FILE}.tar.xz"
 done
 
-# 生成 MD5 校验文件：macOS 与 Linux 区分处理
-if [ "$(uname)" = "Darwin" ]; then
-    for f in dist/release/*; do
-        [ -f "$f" ] || continue
-        md5 -r "$f" > "$f.md5"
-    done
-else
-    for f in dist/release/*; do
-        [ -f "$f" ] || continue
-        md5sum "$f" > "$f.md5"
-    done
-fi
+# 生成所有 dist/release 下文件的 md5
+echo "生成 dist/release 下所有文件的 .md5 文件..."
+for file in dist/release/*; do
+    [ -f "$file" ] || continue
+    md5sum "$file" > "${file}.md5"
+done
