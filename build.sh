@@ -1,12 +1,27 @@
 #!/bin/bash
 
-RUN_NAME=hertz_service
+WORKDIR=$(pwd)
+
+SERVER_NAME=hertz_service
 
 # 创建静态文件目录及默认页面
-mkdir -p static/
-if [ ! -f static/index.html ]; then
-    echo "<h1>hertz service</h1>" > static/index.html
-fi
+# mkdir -p static/
+# if [ ! -f static/index.html ]; then
+#     echo "<h1>hertz service</h1>" > static/index.html
+# fi
+
+AUTHOR=buyfakett
+FRONTEND=learn_modern
+repo_url=https://github.com/${AUTHOR}/${FRONTEND}
+branch_name=main
+git clone --depth 1 --branch "$branch_name" "$repo_url"
+cd ${WORKDIR}/${FRONTEND}/
+npm i -g pnpm
+pnpm i
+pnpm build
+mv dist ../static
+cd ${WORKDIR}/
+rm -rf ${WORKDIR}/${FRONTEND}/
 
 # 检查依赖工具
 if ! command -v xz &> /dev/null; then
@@ -21,13 +36,20 @@ fi
 go mod download
 
 # 定义多平台编译目标
+# platforms=(
+#     "linux/amd64"
+#     "linux/arm64"
+#     "darwin/amd64"
+#     "darwin/arm64"
+#     "windows/amd64"
+#     "windows/arm64"
+# )
+
 platforms=(
     "linux/amd64"
     "linux/arm64"
     "darwin/amd64"
     "darwin/arm64"
-    "windows/amd64"
-    "windows/arm64"
 )
 
 # 主构建流程
@@ -38,7 +60,7 @@ for platform in "${platforms[@]}"; do
     GOARCH=${platform#*/}
 
     # 生成文件名
-    BINARY="${RUN_NAME}_${GOOS}_${GOARCH}"
+    BINARY="${SERVER_NAME}_${GOOS}_${GOARCH}"
     [ "$GOOS" = "windows" ] && BINARY="${BINARY}.exe"
 
     # 目标路径
