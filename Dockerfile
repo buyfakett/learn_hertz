@@ -1,12 +1,11 @@
 ARG PLATFORM=linux/amd64
-ARG ARCH=amd64
-ARG GOOS=linux
-ARG GOARCH=amd64
 ARG ALPINE_VERSION=3.21
 ARG GO_VERSION=1.24.2
 ARG AUTHOR=buyfakett
 ARG FRONTEND=learn_modern
+ARG SERVER_NAME=hertz_service
 
+# 前端
 FROM node:22 as webui
 ARG AUTHOR
 ARG FRONTEND
@@ -21,26 +20,33 @@ RUN set -eux; \
     pnpm build; \
     mv dist ../static
 
+# 后端
 FROM --platform=${PLATFORM} golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
 
-ARG GOOS
-ARG GOARCH
+ARG PLATFORM
+ARG ALPINE_VERSION
+ARG GO_VERSION
+ARG SERVER_NAME
 
 WORKDIR /app
 
 COPY . .
-
 COPY --from=webui /app/static ./static
 
-RUN apk add --no-cache gcc g++ make libc-dev && \
-    go mod download && \
-    CGO_ENABLED=1 GOOS=${PLATFORM} go build -ldflags="-s -w" -o /app/hertz_service
+# 根据平台推导出 GOOS 和 GOARCH
+RUN set -eux; \
+    apk add --no-cache gcc g++ make libc-dev; \
+    GOOS=$(echo "${PLATFORM}" | cut -d'/' -f1); \
+    GOARCH=$(echo "${PLATFORM}" | cut -d'/' -f2); \
+    echo "Building for GOOS=${GOOS} GOARCH=${GOARCH}"; \
+    CGO_ENABLED=1 GOOS=${GOOS} GOARCH=${GOARCH} go build -ldflags="-s -w" -o /app/${SERVER_NAME}
 
-WORKDIR /app
-
+# 最小编译
 FROM --platform=${PLATFORM} alpine:${ALPINE_VERSION} AS final
 
-COPY --from=builder /app/hertz_service /app/hertz_service
+ARG SERVER_NAME
+
+COPY --from=builder /app/${SERVER_NAME} /app/${SERVER_NAME}
 
 EXPOSE 8888
-ENTRYPOINT [ "/app/hertz_service" ]
+ENTRYPOINT [ "/app/${SERVER_NAME}" ]
