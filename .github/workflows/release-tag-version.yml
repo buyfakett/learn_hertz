@@ -34,11 +34,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
   docker-rootful:
-    strategy:
-      matrix:
-        include:
-          - goarch: amd64
-          - goarch: arm64
     runs-on: ubuntu-latest
     permissions:
       packages: write # to publish to ghcr.io
@@ -78,9 +73,6 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          build-args: |
-            TARGETOS=linux
-            TARGETARCH=${{ matrix.goarch }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
