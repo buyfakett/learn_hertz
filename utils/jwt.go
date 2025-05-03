@@ -17,9 +17,28 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(username string, password string) (string, error) {
+// GenerateToken 生成 JWT Token
+//
+// 参数:
+//   - username: 用户名
+//   - password: 密码
+//   - expTime: 可选参数，Token 过期时间（单位：小时）, 如果不传，则使用配置文件中的默认值
+//
+// 返回:
+//   - string: 生成的 Token
+//   - error: 错误信息（如果有）
+func GenerateToken(username, password string, expTime ...int) (string, error) {
 	nowTime := time.Now()
-	expireTime := nowTime.Add(time.Duration(config.Cfg.Jwt.ExpireTime) * time.Hour)
+	var expireHours int
+
+	// 如果 expTime 有传参，则用第一个值；否则用默认值
+	if len(expTime) > 0 {
+		expireHours = expTime[0]
+	} else {
+		expireHours = config.Cfg.Jwt.ExpireTime
+	}
+
+	expireTime := nowTime.Add(time.Duration(expireHours) * time.Hour)
 
 	claims := Claims{
 		username,
