@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   docker-rootful:
-    runs-on: hdy
+    runs-on: self-hosted
     permissions:
       packages: write # to publish to ghcr.io
     steps:
