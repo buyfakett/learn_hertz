@@ -7,6 +7,7 @@ auth:
     - /api/user/login
     - /api/user/add
     - /api/ping
+    - /api/metrics
 admin:
   username: admin
   password: admin123456
