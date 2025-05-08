@@ -11,9 +11,9 @@ SERVER_NAME=hertz_service
 # fi
 
 AUTHOR=buyfakett
-FRONTEND=learn_modern
+FRONTEND=learn_umi
 repo_url=https://github.com/${AUTHOR}/${FRONTEND}
-branch_name=main
+branch_name=master
 git clone --depth 1 --branch "$branch_name" "$repo_url"
 cd ${WORKDIR}/${FRONTEND}/
 npm i -g pnpm

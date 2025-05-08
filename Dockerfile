@@ -1,7 +1,7 @@
 ARG ALPINE_VERSION=3.21
 ARG GO_VERSION=1.24.2
 ARG AUTHOR=buyfakett
-ARG FRONTEND=learn_modern
+ARG FRONTEND=learn_umi
 ARG SERVER_NAME=hertz_service
 
 # 支持多平台构建
@@ -16,7 +16,7 @@ FROM node:22-alpine AS webui
 ARG AUTHOR
 ARG FRONTEND
 ARG repo_url=https://github.com/${AUTHOR}/${FRONTEND}
-ARG branch_name=main
+ARG branch_name=master
 WORKDIR /app
 RUN set -eux; \
     apk add --no-cache git; \
