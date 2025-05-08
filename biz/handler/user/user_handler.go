@@ -46,6 +46,15 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	err = utils.IsAdmin(c)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_Err,
+			Msg:  err.Error(),
+		})
+		return
+	}
+
 	u := &dbmodel.User{
 		Username: req.Username,
 		Password: utils.MD5(req.Password),
@@ -76,9 +85,19 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(user.CommonUserResp)
 
-	userId, _ := strconv.Atoi(req.UserId)
+	err = utils.IsAdmin(c)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_Err,
+			Msg:  err.Error(),
+		})
+		return
+	}
+	userId, _ := utils.GetUseridFromContext(c)
 
-	if userId == 1 {
+	reqUserId, _ := strconv.Atoi(req.UserId)
+
+	if reqUserId == 1 {
 		c.JSON(consts.StatusUnauthorized, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能删除管理员"})
 		return
 	}

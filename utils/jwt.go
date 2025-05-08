@@ -98,3 +98,38 @@ func GetUsernameFromContext(c *app.RequestContext) (string, error) {
 
 	return claims.Username, nil
 }
+
+func GetUseridFromContext(c *app.RequestContext) (int, error) {
+	var userId int
+	claimsInterface, exists := c.Get("claims")
+	if !exists {
+		return userId, fmt.Errorf("未找到用户信息")
+	}
+
+	claims, ok := claimsInterface.(*Claims)
+	if !ok {
+		return userId, fmt.Errorf("用户信息格式错误")
+	}
+
+	userId, _ = strconv.Atoi(claims.Userid)
+
+	return userId, nil
+}
+
+func IsAdmin(c *app.RequestContext) error {
+	claimsInterface, exists := c.Get("claims")
+	if !exists {
+		fmt.Errorf("未找到用户信息")
+	}
+
+	claims, ok := claimsInterface.(*Claims)
+	if !ok {
+		fmt.Errorf("用户信息格式错误")
+	}
+
+	if claims.Userid != "1" {
+		fmt.Errorf("不是管理员，没有权限！！！")
+	}
+
+	return nil
+}
