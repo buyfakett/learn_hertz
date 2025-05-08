@@ -1,18 +1,18 @@
 module hertz_demo
 
-go 1.24.2
+go 1.24.3
 
 require (
 	github.com/cloudwego/hertz v0.9.7
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/glebarez/sqlite v1.10.0
+	github.com/glebarez/sqlite v1.11.0
 	github.com/prometheus/client_golang v1.22.0
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
-	google.golang.org/protobuf v1.36.5
+	google.golang.org/protobuf v1.36.6
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.11
-	gorm.io/gorm v1.26.0
+	gorm.io/gorm v1.26.1
 )
 
 require (
