@@ -82,6 +82,12 @@ message LoginUserReq {
     (api.form) = "password",
     (api.vd) = "(len($) > 0)"
   ];
+
+  bool RememberMe = 3 [
+    (api.body) = "remember_me",
+    (api.form) = "remember_me",
+    (api.vd) = ""
+  ];
 }
 
 message UserLoginResp {

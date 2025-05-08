@@ -224,7 +224,14 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusUnauthorized, &user.UserLoginResp{Code: common.Code_PasswordErr, Msg: "密码错误"})
 		return
 	}
-	token, _ := utils.GenerateToken(userData.ID, req.Username)
+
+	var token string
+	if req.RememberMe {
+		token, _ = utils.GenerateToken(userData.ID, req.Username)
+	} else {
+		//如果没有选记住我就1小时token
+		token, _ = utils.GenerateToken(userData.ID, req.Username, 1)
+	}
 
 	resp.Code = common.Code_Success
 	resp.Msg = "登录成功"

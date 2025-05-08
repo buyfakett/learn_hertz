@@ -13,7 +13,7 @@ admin:
   password: admin123456
 jwt:
   secret: 123qazwsxedc456
-  expire_time: 7
+  expire_time: 168
 db:
   type: sqlite3
   database: test
