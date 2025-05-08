@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"hertz_demo/utils/config"
+	"strconv"
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -12,8 +13,8 @@ import (
 var jwtSecret = []byte(config.Cfg.Jwt.Secret)
 
 type Claims struct {
+	Userid   string `json:"userid"`
 	Username string `json:"username"`
-	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
@@ -21,13 +22,13 @@ type Claims struct {
 //
 // 参数:
 //   - username: 用户名
-//   - password: 密码
+//   - id: 用户id
 //   - expTime: 可选参数，Token 过期时间（单位：小时）, 如果不传，则使用配置文件中的默认值
 //
 // 返回:
 //   - string: 生成的 Token
 //   - error: 错误信息（如果有）
-func GenerateToken(username, password string, expTime ...int) (string, error) {
+func GenerateToken(userid uint, username string, expTime ...int) (string, error) {
 	nowTime := time.Now()
 	var expireHours int
 
@@ -40,9 +41,11 @@ func GenerateToken(username, password string, expTime ...int) (string, error) {
 
 	expireTime := nowTime.Add(time.Duration(expireHours) * time.Hour)
 
+	userId := strconv.FormatUint(uint64(userid), 10)
+
 	claims := Claims{
+		userId,
 		username,
-		password,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    config.Cfg.Server.Name,

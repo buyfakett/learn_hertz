@@ -205,7 +205,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusUnauthorized, &user.UserLoginResp{Code: common.Code_PasswordErr, Msg: "密码错误"})
 		return
 	}
-	token, _ := utils.GenerateToken(req.Username, req.Password)
+	token, _ := utils.GenerateToken(userData.ID, req.Username)
 
 	resp.Code = common.Code_Success
 	resp.Msg = "登录成功"
