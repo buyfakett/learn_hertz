@@ -3,6 +3,8 @@
 package user
 
 import (
+	"hertz_demo/biz/mw"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -15,7 +17,9 @@ func _apiMw() []app.HandlerFunc {
 }
 
 func _userMw() []app.HandlerFunc {
-	return nil
+	return []app.HandlerFunc{
+		mw.AccessLog(),
+	}
 }
 
 func _createuserMw() []app.HandlerFunc {
