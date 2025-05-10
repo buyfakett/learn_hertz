@@ -32,14 +32,14 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	// 先检查用户名是否已存在
 	exist, err := dal.IsUsernameExists(req.Username)
 	if err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
 			Code: common.Code_DBErr,
 			Msg:  "检查用户名失败: " + err.Error(),
 		})
 		return
 	}
 	if exist {
-		c.JSON(consts.StatusBadRequest, &user.CommonUserResp{
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
 			Code: common.Code_AlreadyExists,
 			Msg:  "该用户已存在",
 		})
@@ -48,7 +48,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 
 	err = utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
 			Code: common.Code_Err,
 			Msg:  err.Error(),
 		})
@@ -62,7 +62,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	}
 
 	if err = dal.CreateUser([]*dbmodel.User{u}); err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "用户新建失败: " + err.Error()})
+		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "用户新建失败: " + err.Error()})
 		return
 	}
 
@@ -87,7 +87,7 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 
 	err = utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
 			Code: common.Code_Err,
 			Msg:  err.Error(),
 		})
@@ -98,18 +98,18 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	reqUserId, _ := strconv.Atoi(req.UserId)
 
 	if reqUserId == 1 {
-		c.JSON(consts.StatusUnauthorized, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能删除管理员"})
+		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能删除管理员"})
 		return
 	}
 
 	tokenUsername, _ := utils.GetUsernameFromContext(c)
 	if tokenUsername != config.Cfg.Admin.Username {
-		c.JSON(consts.StatusUnauthorized, &user.CommonUserResp{Code: common.Code_Err, Msg: "非管理员账号没有权限"})
+		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Err, Msg: "非管理员账号没有权限"})
 		return
 	}
 
 	if err = dal.DeleteUser(userId); err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "删除用户失败: " + err.Error()})
+		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "删除用户失败: " + err.Error()})
 		return
 	}
 	resp.Code = common.Code_Success
@@ -136,14 +136,14 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	// 获取用户信息
 	userData, err := dal.GetUserByID(userId)
 	if err != nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
 			Code: common.Code_DBErr,
 			Msg:  "数据库查询错误: " + err.Error(),
 		})
 		return
 	}
 	if userData == nil {
-		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
 			Code: common.Code_DBErr,
 			Msg:  "用户未找到",
 		})
@@ -152,7 +152,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 
 	tokenUsername, _ := utils.GetUsernameFromContext(c)
 	if tokenUsername != userData.Username {
-		c.JSON(consts.StatusUnauthorized, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能修改别人的账号"})
+		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能修改别人的账号"})
 		return
 	}
 
@@ -162,14 +162,14 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 		// 先检查用户名是否已存在
 		exist, err := dal.IsUsernameExists(*req.Username)
 		if err != nil {
-			c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			c.JSON(consts.StatusOK, &user.CommonUserResp{
 				Code: common.Code_DBErr,
 				Msg:  "检查用户名失败: " + err.Error(),
 			})
 			return
 		}
 		if exist {
-			c.JSON(consts.StatusBadRequest, &user.CommonUserResp{
+			c.JSON(consts.StatusOK, &user.CommonUserResp{
 				Code: common.Code_AlreadyExists,
 				Msg:  "该用户已存在",
 			})
@@ -216,12 +216,12 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		c.JSON(consts.StatusUnauthorized, &user.UserLoginResp{Code: common.Code_DBErr, Msg: err.Error()})
+		c.JSON(consts.StatusOK, &user.UserLoginResp{Code: common.Code_DBErr, Msg: err.Error()})
 		return
 	}
 
 	if userData.Password != utils.MD5(req.Password) {
-		c.JSON(consts.StatusUnauthorized, &user.UserLoginResp{Code: common.Code_PasswordErr, Msg: "密码错误"})
+		c.JSON(consts.StatusOK, &user.UserLoginResp{Code: common.Code_PasswordErr, Msg: "密码错误"})
 		return
 	}
 
