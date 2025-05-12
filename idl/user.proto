@@ -96,6 +96,36 @@ message UserLoginResp {
   UserLoginData data = 3;
 }
 
+message UserListReq {
+  int32 page = 1 [
+    (api.query) = "page",
+    (api.vd) = "$ >= 1"
+  ];
+
+  int32 page_size = 2 [
+    (api.query) = "page_size",
+    (api.vd) = "$ >= 1 && $ <= 100"
+  ];
+
+  optional string username = 3 [
+    (api.query) = "username",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ]; // 可选用户名过滤字段
+}
+
+message UserListResp {
+  Code code = 1;
+  string msg = 2;
+  int32 total = 3;
+  repeated UserListData data = 4;
+}
+
+message UserListData {
+  int64 user_id = 1;
+  string username = 2;
+  string email = 3;
+}
+
 message UserLoginData {
   string token = 1;
 }
@@ -117,5 +147,8 @@ service UserHandler {
   rpc UserLogin(LoginUserReq) returns(UserLoginResp) {
     option (api.post) = "/api/user/login";
   }
-}
 
+  rpc UserList(UserListReq) returns(UserListResp) {
+    option (api.get) = "/api/user/list";
+  }
+}

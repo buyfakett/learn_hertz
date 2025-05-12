@@ -45,3 +45,7 @@ func _updateuserMw() []app.HandlerFunc {
 func _userloginMw() []app.HandlerFunc {
 	return nil
 }
+
+func _userlistMw() []app.HandlerFunc {
+	return nil
+}

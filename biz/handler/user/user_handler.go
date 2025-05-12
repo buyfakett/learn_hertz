@@ -49,7 +49,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	err = utils.IsAdmin(c)
 	if err != nil {
 		c.JSON(consts.StatusOK, &user.CommonUserResp{
-			Code: common.Code_Err,
+			Code: common.Code_Unauthorized,
 			Msg:  err.Error(),
 		})
 		return
@@ -88,7 +88,7 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	err = utils.IsAdmin(c)
 	if err != nil {
 		c.JSON(consts.StatusOK, &user.CommonUserResp{
-			Code: common.Code_Err,
+			Code: common.Code_Unauthorized,
 			Msg:  err.Error(),
 		})
 		return
@@ -238,6 +238,78 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	resp.Data = &user.UserLoginData{
 		Token: token,
 	}
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// UserList .
+// @router /api/user/list [GET]
+func UserList(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.UserListReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.UserListResp)
+
+	// 检查管理员权限
+	err = utils.IsAdmin(c)
+	if err != nil {
+		c.JSON(consts.StatusOK, &user.UserListResp{
+			Code: common.Code_Unauthorized,
+			Msg:  err.Error(),
+		})
+		return
+	}
+
+	// 设置分页默认值
+	if req.Page == 0 {
+		req.Page = 1
+	}
+	if req.PageSize == 0 {
+		req.PageSize = 10
+	}
+
+	// 计算偏移量
+	offset := (req.Page - 1) * req.PageSize
+
+	if req.Username == nil {
+		req.Username = new(string)
+		*req.Username = ""
+	}
+
+	// 获取用户列表和总数（转换分页参数类型）
+	users, total, err := dal.GetUserList(int(req.PageSize), int(offset), *req.Username)
+	if err != nil {
+		c.JSON(consts.StatusOK, &user.UserListResp{
+			Code: common.Code_DBErr,
+			Msg:  "获取用户列表失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 转换响应格式
+	var userList []*user.UserListData
+	for _, u := range users {
+		userList = append(userList, &user.UserListData{
+			UserId:   int64(u.ID),
+			Username: u.Username,
+			Email: func() string {
+				if u.Email != nil {
+					return *u.Email
+				}
+				return ""
+			}(),
+		})
+	}
+
+	resp.Code = common.Code_Success
+	resp.Msg = "获取成功"
+	resp.Total = int32(total)
+	resp.Data = userList
 
 	c.JSON(consts.StatusOK, resp)
 }

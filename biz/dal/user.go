@@ -3,8 +3,9 @@ package dal
 import (
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
 	"hertz_demo/biz/dbmodel"
+
+	"gorm.io/gorm"
 )
 
 func CreateUser(users []*dbmodel.User) error {
@@ -44,6 +45,24 @@ func GetUserByID(userId int) (*dbmodel.User, error) {
 // UpdateUser 更新用户信息
 func UpdateUser(user *dbmodel.User) error {
 	return DB.Updates(user).Error
+}
+
+// GetUserList 获取用户列表（分页）
+func GetUserList(pageSize int, offset int, username string) ([]*dbmodel.User, int64, error) {
+	var users []*dbmodel.User
+	var total int64
+
+	// 查询总数
+	if err := DB.Model(&dbmodel.User{}).Where("username LIKE ?", "%"+username+"%").Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 分页查询
+	if err := DB.Model(&dbmodel.User{}).Where("username LIKE ?", "%"+username+"%").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, total, nil
 }
 
 func UserLogin(username string) (*dbmodel.User, error) {
