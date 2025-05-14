@@ -281,8 +281,13 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 		*req.Username = ""
 	}
 
+	if req.Email == nil {
+		req.Email = new(string)
+		*req.Email = ""
+	}
+
 	// 获取用户列表和总数（转换分页参数类型）
-	users, err := dal.GetUserList(int(req.PageSize), int(offset), *req.Username)
+	users, err := dal.GetUserList(int(req.PageSize), int(offset), *req.Username, *req.Email)
 	if err != nil {
 		c.JSON(consts.StatusOK, &user.UserListResp{
 			Code: common.Code_DBErr,

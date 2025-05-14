@@ -111,6 +111,11 @@ message UserListReq {
     (api.query) = "username",
     (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
   ]; // 可选用户名过滤字段
+
+  optional string email = 4 [
+    (api.query) = "email",
+    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
+  ];
 }
 
 message UserListResp {

@@ -48,12 +48,18 @@ func UpdateUser(user *dbmodel.User) error {
 }
 
 // GetUserList 获取用户列表（分页）
-func GetUserList(pageSize int, offset int, username string) ([]*dbmodel.User, error) {
+func GetUserList(pageSize int, offset int, username string, email string) ([]*dbmodel.User, error) {
 	// 显式初始化空数组
 	var users []*dbmodel.User
 
 	// 分页查询
-	if err := DB.Model(&dbmodel.User{}).Where("username LIKE ?", "%"+username+"%").Offset(offset).Limit(pageSize).Order("id").Find(&users).Error; err != nil {
+	if err := DB.Model(&dbmodel.User{}).
+		Where("username LIKE ?", "%"+username+"%").
+		Where("email LIKE ?", "%"+email+"%").
+		Offset(offset).
+		Limit(pageSize).
+		Order("id").
+		Find(&users).Error; err != nil {
 		return nil, err
 	}
 
