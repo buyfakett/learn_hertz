@@ -54,8 +54,10 @@ func GetUserList(pageSize int, offset int, username string, email string) ([]*db
 
 	// 分页查询
 	if err := DB.Model(&dbmodel.User{}).
-		Where("username LIKE ?", "%"+username+"%").
-		Where("email LIKE ?", "%"+email+"%").
+		Where("username LIKE ? AND (email LIKE ? OR email IS NULL)",
+			"%"+username+"%",
+			"%"+email+"%",
+		).
 		Offset(offset).
 		Limit(pageSize).
 		Order("id").
