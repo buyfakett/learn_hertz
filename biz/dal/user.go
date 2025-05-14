@@ -53,7 +53,7 @@ func GetUserList(pageSize int, offset int, username string) ([]*dbmodel.User, er
 	var users []*dbmodel.User
 
 	// 分页查询
-	if err := DB.Model(&dbmodel.User{}).Where("username LIKE ?", "%"+username+"%").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+	if err := DB.Model(&dbmodel.User{}).Where("username LIKE ?", "%"+username+"%").Offset(offset).Limit(pageSize).Order("id").Find(&users).Error; err != nil {
 		return nil, err
 	}
 
