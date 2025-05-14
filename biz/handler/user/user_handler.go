@@ -9,7 +9,6 @@ import (
 	user "hertz_demo/biz/model/basic/user"
 	"hertz_demo/biz/model/common"
 	"hertz_demo/utils"
-	"hertz_demo/utils/config"
 	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -93,7 +92,6 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
-	userId, _ := utils.GetUseridFromContext(c)
 
 	reqUserId, _ := strconv.Atoi(req.UserId)
 
@@ -102,13 +100,13 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	tokenUsername, _ := utils.GetUsernameFromContext(c)
-	if tokenUsername != config.Cfg.Admin.Username {
+	userId, _ := utils.GetUseridFromContext(c)
+	if userId != 1 {
 		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Err, Msg: "非管理员账号没有权限"})
 		return
 	}
 
-	if err = dal.DeleteUser(userId); err != nil {
+	if err = dal.DeleteUser(reqUserId); err != nil {
 		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_DBErr, Msg: "删除用户失败: " + err.Error()})
 		return
 	}
