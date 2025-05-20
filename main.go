@@ -19,6 +19,7 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
+	"github.com/hertz-contrib/cors"
 )
 
 //go:embed config/default.yaml
@@ -37,6 +38,17 @@ func main() {
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithTransport(standard.NewTransporter),
 	)
+
+	if config.Cfg.Server.LogLevel == "debug" {
+		h.Use(cors.New(cors.Config{
+			AllowOrigins:     []string{"*"},
+			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+			MaxAge:           12 * time.Hour,
+		}))
+	}
 
 	// 启动时打印完整访问地址
 	h.OnRun = append(h.OnRun, func(ctx context.Context) error {
