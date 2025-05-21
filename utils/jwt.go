@@ -22,7 +22,6 @@ func initJWT() error {
 	var err error
 	jwtMiddleware, err = jwt.New(&jwt.HertzJWTMiddleware{
 		Key:               jwtSecret,
-		Timeout:           time.Hour * time.Duration(config.Cfg.Jwt.ExpireTime),
 		IdentityKey:       "userid",
 		SendCookie:        false,
 		SendAuthorization: false,
@@ -63,8 +62,20 @@ func GenerateToken(userid uint, username string, expTime ...int) (string, error)
 		}
 	}
 
+	// 强制覆盖中间件的 Timeout 设置
+	originalTimeout := jwtMiddleware.Timeout
+	defer func() { jwtMiddleware.Timeout = originalTimeout }() // 恢复原配置
+
+	// 计算过期时间
+	if len(expTime) > 0 {
+		jwtMiddleware.Timeout = time.Hour * time.Duration(expTime[0])
+	} else {
+		jwtMiddleware.Timeout = time.Hour * time.Duration(config.Cfg.Jwt.ExpireTime)
+	}
+
+	// 生成 claims（不再手动设置 exp）
 	claims := map[string]interface{}{
-		"userid":   int(userid), // 转换为int类型
+		"userid":   int(userid),
 		"username": username,
 	}
 
