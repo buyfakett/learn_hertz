@@ -52,7 +52,11 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 		}
 
 		// 将 claims 保存到上下文
-		c.Set("claims", claims)
+		for k, v := range claims {
+			c.Set(k, v)
+		}
+		c.Set("userid", claims["userid"])
+		c.Set("username", claims["username"])
 
 		// 如果验证通过，继续处理请求
 		c.Next(ctx)

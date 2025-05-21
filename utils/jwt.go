@@ -1,134 +1,161 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"hertz_demo/utils/config"
-	"strconv"
 	"time"
 
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+
 	"github.com/cloudwego/hertz/pkg/app"
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/hertz-contrib/jwt"
 )
 
-var jwtSecret = []byte(config.Cfg.Jwt.Secret)
+var (
+	jwtMiddleware *jwt.HertzJWTMiddleware
+	jwtSecret     = []byte(config.Cfg.Jwt.Secret)
+)
 
-type Claims struct {
-	Userid   string `json:"userid"`
-	Username string `json:"username"`
-	jwt.StandardClaims
+// 初始化 JWT 中间件
+func initJWT() error {
+	var err error
+	jwtMiddleware, err = jwt.New(&jwt.HertzJWTMiddleware{
+		Key:               jwtSecret,
+		Timeout:           time.Hour * time.Duration(config.Cfg.Jwt.ExpireTime),
+		IdentityKey:       "userid",
+		SendCookie:        false,
+		SendAuthorization: false,
+		TokenLookup:       "header: Authorization",
+		TokenHeadName:     "Bearer",
+		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			if v, ok := data.(map[string]interface{}); ok {
+				return jwt.MapClaims{
+					"userid":   v["userid"], // 确保生成时为int类型
+					"username": v["username"],
+					"iss":      config.Cfg.Server.Name,
+				}
+			}
+			return jwt.MapClaims{}
+		},
+		Authorizator: func(data interface{}, ctx context.Context, c *app.RequestContext) bool {
+			if claims, ok := data.(jwt.MapClaims); ok {
+				// 确保 userid 转换为 int 类型
+				if userid, ok := claims["userid"].(float64); ok {
+					c.Set("userid", int(userid)) // 明确转换为 int
+				}
+				if username, ok := claims["username"].(string); ok {
+					c.Set("username", username)
+				}
+				return true
+			}
+			return false
+		},
+	})
+	return err
 }
 
 // GenerateToken 生成 JWT Token
-//
-// 参数:
-//   - username: 用户名
-//   - id: 用户id
-//   - expTime: 可选参数，Token 过期时间（单位：小时）, 如果不传，则使用配置文件中的默认值
-//
-// 返回:
-//   - string: 生成的 Token
-//   - error: 错误信息（如果有）
 func GenerateToken(userid uint, username string, expTime ...int) (string, error) {
-	nowTime := time.Now()
-	var expireHours int
-
-	// 如果 expTime 有传参，则用第一个值；否则用默认值
-	if len(expTime) > 0 {
-		expireHours = expTime[0]
-	} else {
-		expireHours = config.Cfg.Jwt.ExpireTime
+	if jwtMiddleware == nil {
+		if err := initJWT(); err != nil {
+			return "", err
+		}
 	}
 
-	expireTime := nowTime.Add(time.Duration(expireHours) * time.Hour)
-
-	userId := strconv.FormatUint(uint64(userid), 10)
-
-	claims := Claims{
-		userId,
-		username,
-		jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
-			Issuer:    config.Cfg.Server.Name,
-		},
+	claims := map[string]interface{}{
+		"userid":   int(userid), // 转换为int类型
+		"username": username,
 	}
 
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString(jwtSecret)
-
+	token, _, err := jwtMiddleware.TokenGenerator(claims)
 	return token, err
 }
 
-func ParseToken(token string) (*Claims, error) {
-	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
-	})
+// ParseToken 解析并验证 JWT Token
+func ParseToken(tokenStr string) (jwt.MapClaims, error) {
+	if jwtMiddleware == nil {
+		if err := initJWT(); err != nil {
+			return nil, err
+		}
+	}
 
+	parsedToken, err := jwtMiddleware.ParseTokenString(tokenStr)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("token 解析失败: %v", err)
 	}
 
-	// 类型断言 + 校验 token 有效性
-	if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
-		// 检查 issuer 是否匹配
-		if claims.Issuer != config.Cfg.Server.Name {
-			return nil, fmt.Errorf("issuer 不匹配")
-		}
+	claims := jwt.ExtractClaimsFromToken(parsedToken)
 
-		// 检查是否过期
-		if claims.ExpiresAt < time.Now().Unix() {
-			return nil, fmt.Errorf("token 已过期")
-		}
-
-		return claims, nil
+	// 验证 issuer
+	if iss, ok := claims["iss"].(string); !ok || iss != config.Cfg.Server.Name {
+		return nil, fmt.Errorf("issuer 不匹配")
 	}
 
-	return nil, fmt.Errorf("token 不合法")
+	// 验证过期时间
+	if exp, ok := claims["exp"].(float64); !ok || int64(exp) < time.Now().Unix() {
+		return nil, fmt.Errorf("token 已过期")
+	}
+
+	// 验证userid并转换为int
+	useridVal, ok := claims["userid"]
+	if !ok {
+		return nil, fmt.Errorf("token 缺少 userid")
+	}
+	userid, ok := useridVal.(float64)
+	if !ok {
+		return nil, fmt.Errorf("userid 类型错误")
+	}
+	claims["userid"] = int(userid) // 转换为int类型
+
+	// 验证username
+	if _, ok := claims["username"].(string); !ok {
+		return nil, fmt.Errorf("token 缺少 username")
+	}
+
+	return claims, nil
 }
 
+// GetUsernameFromContext 从上下文中提取用户名
 func GetUsernameFromContext(c *app.RequestContext) (string, error) {
-	claimsInterface, exists := c.Get("claims")
+	usernameVal, exists := c.Get("username")
 	if !exists {
-		return "", fmt.Errorf("未找到用户信息")
+		return "", fmt.Errorf("未找到用户名")
 	}
 
-	claims, ok := claimsInterface.(*Claims)
+	username, ok := usernameVal.(string)
 	if !ok {
-		return "", fmt.Errorf("用户信息格式错误")
+		return "", fmt.Errorf("用户名类型错误")
 	}
 
-	return claims.Username, nil
+	return username, nil
 }
 
+// GetUseridFromContext 从上下文中提取用户ID
 func GetUseridFromContext(c *app.RequestContext) (int, error) {
-	var userId int
-	claimsInterface, exists := c.Get("claims")
+	useridVal, exists := c.Get("userid")
 	if !exists {
-		return userId, fmt.Errorf("未找到用户信息")
+		return 0, fmt.Errorf("未找到用户ID")
 	}
 
-	claims, ok := claimsInterface.(*Claims)
+	userid, ok := useridVal.(int)
 	if !ok {
-		return userId, fmt.Errorf("用户信息格式错误")
+		return 0, fmt.Errorf("userid 类型错误")
 	}
 
-	userId, _ = strconv.Atoi(claims.Userid)
-
-	return userId, nil
+	return userid, nil
 }
 
+// IsAdmin 判断是否为管理员
 func IsAdmin(c *app.RequestContext) error {
-	claimsInterface, exists := c.Get("claims")
-	if !exists {
-		fmt.Errorf("未找到用户信息")
+	userid, err := GetUseridFromContext(c)
+	if err != nil {
+		return err
 	}
 
-	claims, ok := claimsInterface.(*Claims)
-	if !ok {
-		fmt.Errorf("用户信息格式错误")
-	}
-
-	if claims.Userid != "1" {
-		fmt.Errorf("不是管理员，没有权限！！！")
+	if userid != 1 {
+		hlog.Infof("当前用户ID: %d", userid)
+		return fmt.Errorf("不是管理员，没有权限")
 	}
 
 	return nil
