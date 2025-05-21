@@ -20,6 +20,8 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"github.com/hertz-contrib/cors"
+	"github.com/hertz-contrib/gzip"
+	"github.com/hertz-contrib/logger/accesslog"
 )
 
 //go:embed config/default.yaml
@@ -38,6 +40,8 @@ func main() {
 		server.WithMaxRequestBodySize(20<<20),
 		server.WithTransport(standard.NewTransporter),
 	)
+	h.Use(gzip.Gzip(gzip.DefaultCompression))
+	h.Use(accesslog.New())
 
 	if config.Cfg.Server.LogLevel == "debug" {
 		h.Use(cors.New(cors.Config{

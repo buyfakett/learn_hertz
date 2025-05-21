@@ -6,7 +6,9 @@ require (
 	github.com/cloudwego/hertz v0.10.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/hertz-contrib/cors v0.1.0
+	github.com/hertz-contrib/gzip v0.0.3
 	github.com/hertz-contrib/jwt v1.0.4
+	github.com/hertz-contrib/logger/accesslog v0.0.0-20241107070745-e4ce8c54dd97
 	github.com/prometheus/client_golang v1.22.0
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
