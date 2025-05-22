@@ -13,7 +13,7 @@ SERVER_NAME=hertz_service
 AUTHOR=buyfakett
 FRONTEND=semi-design-pro
 repo_url=https://github.com/${AUTHOR}/${FRONTEND}
-branch_name=master
+branch_name=main
 git clone --depth 1 --branch "$branch_name" "$repo_url"
 cd ${WORKDIR}/${FRONTEND}/
 npm i -g pnpm
