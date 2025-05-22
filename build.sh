@@ -11,7 +11,7 @@ SERVER_NAME=hertz_service
 # fi
 
 AUTHOR=buyfakett
-FRONTEND=learn_umi
+FRONTEND=semi-design-pro
 repo_url=https://github.com/${AUTHOR}/${FRONTEND}
 branch_name=master
 git clone --depth 1 --branch "$branch_name" "$repo_url"
