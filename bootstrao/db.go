@@ -13,6 +13,7 @@ func Migrate(db *gorm.DB) error {
 	// 自动迁移表结构
 	if err := db.AutoMigrate(
 		&dbmodel.User{},
+		&dbmodel.Book{},
 	); err != nil {
 		return err
 	}
