@@ -8,7 +8,6 @@ import (
 	"hertz_demo/biz/dbmodel"
 	book "hertz_demo/biz/model/basic/book"
 	"hertz_demo/biz/model/common"
-	"hertz_demo/utils"
 	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -27,15 +26,6 @@ func CreateBook(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(book.CommonBookResp)
-
-	err = utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(consts.StatusOK, &book.CommonBookResp{
-			Code: common.Code_Unauthorized,
-			Msg:  err.Error(),
-		})
-		return
-	}
 
 	exist, err := dal.IsBookExists(req.Title)
 	if err != nil {
@@ -83,15 +73,6 @@ func DeleteBook(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(book.CommonBookResp)
 
-	err = utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(consts.StatusOK, &book.CommonBookResp{
-			Code: common.Code_Unauthorized,
-			Msg:  err.Error(),
-		})
-		return
-	}
-
 	bookID, _ := strconv.Atoi(req.BookId)
 	if err = dal.DeleteBook(uint(bookID)); err != nil {
 		c.JSON(consts.StatusOK, &book.CommonBookResp{Code: common.Code_DBErr, Msg: "删除图书失败: " + err.Error()})
@@ -115,15 +96,6 @@ func UpdateBook(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(book.CommonBookResp)
-
-	err = utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(consts.StatusOK, &book.CommonBookResp{
-			Code: common.Code_Unauthorized,
-			Msg:  err.Error(),
-		})
-		return
-	}
 
 	bookID, _ := strconv.Atoi(req.BookId)
 	bookData, err := dal.GetBookByID(uint(bookID))
