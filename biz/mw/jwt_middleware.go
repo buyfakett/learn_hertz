@@ -33,8 +33,8 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 		token := c.Request.Header.Get("Authorization")
 		if token == "" {
 			c.JSON(consts.StatusUnauthorized, map[string]interface{}{
-				"code":    consts.StatusUnauthorized,
-				"message": "缺少token",
+				"code": consts.StatusUnauthorized,
+				"msg":  "缺少token",
 			})
 			c.Abort() // 终止后续处理
 			return
@@ -44,8 +44,8 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 		claims, err := utils.ParseToken(token)
 		if err != nil {
 			c.JSON(consts.StatusUnauthorized, map[string]interface{}{
-				"code":    consts.StatusUnauthorized,
-				"message": err.Error(),
+				"code": consts.StatusUnauthorized,
+				"msg":  err.Error(),
 			})
 			c.Abort() // 终止后续处理
 			return
