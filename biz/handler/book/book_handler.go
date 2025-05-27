@@ -184,6 +184,7 @@ func BookList(ctx context.Context, c *app.RequestContext) {
 			BookId: strconv.Itoa(int(b.ID)),
 			Title:  b.Title,
 			Author: b.Author,
+			Year:   int32(b.Year),
 			Summary: func() string {
 				if b.Summary != nil {
 					return *b.Summary
