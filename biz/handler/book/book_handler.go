@@ -46,7 +46,7 @@ func CreateBook(ctx context.Context, c *app.RequestContext) {
 	b := &dbmodel.Book{
 		Title:   req.Title,
 		Author:  req.Author,
-		Year:    int(req.Year),
+		Year:    req.Year,
 		Summary: req.Summary,
 	}
 
@@ -121,7 +121,7 @@ func UpdateBook(ctx context.Context, c *app.RequestContext) {
 		bookData.Author = *req.Author
 	}
 	if req.Year != nil {
-		bookData.Year = int(*req.Year)
+		bookData.Year = *req.Year
 	}
 	if req.Summary != nil {
 		bookData.Summary = req.Summary
@@ -184,7 +184,7 @@ func BookList(ctx context.Context, c *app.RequestContext) {
 			BookId: strconv.Itoa(int(b.ID)),
 			Title:  b.Title,
 			Author: b.Author,
-			Year:   int32(b.Year),
+			Year:   b.Year,
 			Summary: func() string {
 				if b.Summary != nil {
 					return *b.Summary
