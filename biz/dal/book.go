@@ -54,7 +54,7 @@ func GetBookList(pageSize, offset int, title, author string) ([]*dbmodel.Book, e
 		query = query.Where("author LIKE ?", "%"+author+"%")
 	}
 
-	err := query.Limit(pageSize).Offset(offset).Find(&books).Order("id").Error
+	err := query.Order("id").Limit(pageSize).Offset(offset).Find(&books).Error
 	return books, err
 }
 
