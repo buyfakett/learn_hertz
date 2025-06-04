@@ -50,13 +50,7 @@ message UpdateUserReq {
     (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
   ];  // 必传字段（proto3 默认规则）
 
-  optional string password = 3 [
-    (api.body) = "password",
-    (api.form) = "password",
-    (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"
-  ];  // 必传字段
-
-  optional string email = 4 [
+  optional string email = 3 [
     (api.body) = "email",
     (api.form) = "email",
     (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"

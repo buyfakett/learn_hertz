@@ -174,10 +174,6 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 			return
 		}
 	}
-	// 更新字段（只有不为 nil 才会更新）
-	if req.Password != nil {
-		userData.Password = utils.MD5(*req.Password)
-	}
 
 	if req.Email != nil {
 		userData.Email = req.Email
