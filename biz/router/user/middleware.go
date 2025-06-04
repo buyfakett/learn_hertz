@@ -49,3 +49,11 @@ func _userloginMw() []app.HandlerFunc {
 func _userlistMw() []app.HandlerFunc {
 	return nil
 }
+
+func _change_passwdMw() []app.HandlerFunc {
+	return nil
+}
+
+func _changepasswdMw() []app.HandlerFunc {
+	return nil
+}

@@ -57,6 +57,18 @@ message UpdateUserReq {
   ];  // 可选字段（可传可不传）
 }
 
+message ChangePasswdReq {
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];
+
+  string password = 2 [
+    (api.body) = "password",
+    (api.form) = "password",
+    (api.vd) = "(len($) > 0 && len($) < 255)"
+  ];
+}
 
 message CommonUserResp{
   Code code = 1;
@@ -141,6 +153,10 @@ service UserHandler {
 
   rpc UpdateUser(UpdateUserReq) returns(CommonUserResp) {
     option (api.post) = "/api/user/update/:user_id";
+  }
+
+  rpc ChangePasswd(ChangePasswdReq) returns(CommonUserResp) {
+    option (api.post) = "/api/user/change_passwd/:user_id";
   }
 
   rpc UserLogin(LoginUserReq) returns(UserLoginResp) {

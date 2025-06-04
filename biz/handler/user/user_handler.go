@@ -195,6 +195,65 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
+// ChangePasswd .
+// @router /api/user/change_passwd/:user_id [POST]
+func ChangePasswd(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.ChangePasswdReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.CommonUserResp)
+
+	userId, _ := strconv.Atoi(req.UserId)
+	tokenUserId, _ := utils.GetUseridFromContext(c)
+
+	if userId != tokenUserId {
+		if tokenUserId != 1 {
+			c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Unauthorized, Msg: "不能修改别人的密码"})
+			return
+		}
+	}
+
+	// 获取用户信息
+	userData, err := dal.GetUserByID(userId)
+	if err != nil {
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "数据库查询错误: " + err.Error(),
+		})
+		return
+	}
+	if userData == nil {
+		c.JSON(consts.StatusOK, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "用户未找到",
+		})
+		return
+	}
+
+	userData.Password = utils.MD5(req.Password)
+
+	// 方法保存数据
+	err = dal.UpdateUser(userData)
+	if err != nil {
+		c.JSON(consts.StatusInternalServerError, &user.CommonUserResp{
+			Code: common.Code_DBErr,
+			Msg:  "修改密码失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 返回成功响应
+	resp.Code = common.Code_Success
+	resp.Msg = "密码更新成功"
+
+	c.JSON(consts.StatusOK, resp)
+}
+
 // UserLogin .
 // @router /api/user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {

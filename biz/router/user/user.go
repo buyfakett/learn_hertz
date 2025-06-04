@@ -25,6 +25,10 @@ func Register(r *server.Hertz) {
 			_user.GET("/list", append(_userlistMw(), user.UserList)...)
 			_user.POST("/login", append(_userloginMw(), user.UserLogin)...)
 			{
+				_change_passwd := _user.Group("/change_passwd", _change_passwdMw()...)
+				_change_passwd.POST("/:user_id", append(_changepasswdMw(), user.ChangePasswd)...)
+			}
+			{
 				_delete := _user.Group("/delete", _deleteMw()...)
 				_delete.DELETE("/:user_id", append(_deleteuserMw(), user.DeleteUser)...)
 			}
