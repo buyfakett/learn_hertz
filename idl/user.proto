@@ -16,13 +16,7 @@ message CreateUserReq {
     (api.vd) = "(len($) > 0 && len($) < 255)"
   ];  // 必传字段（proto3 默认规则）
 
-  string password = 2 [
-    (api.body) = "password",
-    (api.form) = "password",
-    (api.vd) = "(len($) > 0 && len($) < 255)"
-  ];  // 必传字段
-
-  optional string email = 3 [
+  optional string email = 2 [
     (api.body) = "email",
     (api.form) = "email",
     (api.vd) = "($ == nil || (len($) > 0 && len($) < 255))"

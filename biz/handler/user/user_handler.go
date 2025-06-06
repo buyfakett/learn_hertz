@@ -56,7 +56,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 
 	u := &dbmodel.User{
 		Username: req.Username,
-		Password: utils.MD5(req.Password),
+		Password: "",
 		Email:    req.Email,
 	}
 
