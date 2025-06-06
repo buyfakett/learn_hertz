@@ -126,7 +126,7 @@ message UserListResp {
 }
 
 message UserListData {
-  int64 user_id = 1;
+  string user_id = 1;
   string username = 2;
   string email = 3;
 }

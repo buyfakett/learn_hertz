@@ -353,7 +353,7 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 	var userList []*user.UserListData
 	for _, u := range users {
 		userList = append(userList, &user.UserListData{
-			UserId:   int64(u.ID),
+			UserId:   strconv.Itoa(int(u.ID)),
 			Username: u.Username,
 			Email: func() string {
 				if u.Email != nil {
