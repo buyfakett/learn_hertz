@@ -5,7 +5,6 @@ server:
 auth:
   excludedPaths:
     - /api/user/login
-    - /api/user/add
     - /api/ping
     - /api/metrics
 admin:
