@@ -39,6 +39,9 @@ ARG TARGETARCH
 WORKDIR /app
 
 COPY . .
+
+RUN go mod download
+
 COPY --from=webui /app/static ./static
 
 # 根据平台推导出 GOOS 和 GOARCH
