@@ -130,6 +130,14 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	resp := new(user.CommonUserResp)
 
 	userId, _ := strconv.Atoi(req.UserId)
+	tokenUserId, _ := utils.GetUseridFromContext(c)
+
+	if userId != tokenUserId {
+		if tokenUserId != 1 {
+			c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Unauthorized, Msg: "不能修改别人的密码"})
+			return
+		}
+	}
 
 	// 获取用户信息
 	userData, err := dal.GetUserByID(userId)
@@ -148,13 +156,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	tokenUsername, _ := utils.GetUsernameFromContext(c)
-	if tokenUsername != userData.Username {
-		c.JSON(consts.StatusOK, &user.CommonUserResp{Code: common.Code_Err, Msg: "不能修改别人的账号"})
-		return
-	}
-
-	// 更新用户名或密码等其他字段
+	// 更新用户名等其他字段
 	if req.Username != nil {
 		userData.Username = *req.Username
 		// 先检查用户名是否已存在
@@ -166,7 +168,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 			})
 			return
 		}
-		if exist {
+		if exist && userData.Username != *req.Username {
 			c.JSON(consts.StatusOK, &user.CommonUserResp{
 				Code: common.Code_AlreadyExists,
 				Msg:  "该用户已存在",
