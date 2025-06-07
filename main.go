@@ -84,7 +84,7 @@ func main() {
 
 	go func() {
 		if err := h.Run(); err != nil {
-			log.Fatalf("服务启动失败: %v", err)
+			log.Fatalf("服务已关闭: %v", err)
 		}
 	}()
 
