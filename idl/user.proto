@@ -122,10 +122,10 @@ message UserListResp {
   Code code = 1;
   string msg = 2;
   int32 total = 3;
-  repeated UserListData data = 4;
+  repeated UserData data = 4;
 }
 
-message UserListData {
+message UserData {
   string user_id = 1;
   string username = 2;
   string email = 3;
@@ -133,6 +133,20 @@ message UserListData {
 
 message UserLoginData {
   string token = 1;
+}
+
+// 用户信息请求消息
+message UserInfoReq {
+  string user_id = 1 [
+    (api.path) = "user_id",
+    (api.vd) = "(len($) > 0)"
+  ];  // 必传字段
+}
+
+message UserInfoResp {
+  Code code = 1;
+  string msg = 2;
+  UserData data = 3;
 }
 
 // 用户处理服务
@@ -159,5 +173,9 @@ service UserHandler {
 
   rpc UserList(UserListReq) returns(UserListResp) {
     option (api.get) = "/api/user/list";
+  }
+
+  rpc UserInfo(UserInfoReq) returns(UserInfoResp) {
+    option (api.get) = "/api/user/info/:user_id";
   }
 }

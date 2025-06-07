@@ -352,9 +352,9 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	// 转换响应格式
-	var userList []*user.UserListData
+	var userList []*user.UserData
 	for _, u := range users {
-		userList = append(userList, &user.UserListData{
+		userList = append(userList, &user.UserData{
 			UserId:   strconv.Itoa(int(u.ID)),
 			Username: u.Username,
 			Email: func() string {
@@ -370,6 +370,61 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 	resp.Msg = "获取成功"
 	resp.Total = int32(len(userList))
 	resp.Data = userList
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// UserInfo .
+// @router /api/user/info/:user_id [GET]
+func UserInfo(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.UserInfoReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(user.UserInfoResp)
+
+	userId, _ := strconv.Atoi(req.UserId)
+	tokenUserId, _ := utils.GetUseridFromContext(c)
+
+	if userId != tokenUserId {
+		c.JSON(consts.StatusOK, &user.UserInfoResp{Code: common.Code_Unauthorized, Msg: "不能修改获取别人"})
+		return
+	}
+
+	// 获取用户信息
+	userData, err := dal.GetUserByID(userId)
+	if err != nil {
+		c.JSON(consts.StatusOK, &user.UserInfoResp{
+			Code: common.Code_DBErr,
+			Msg:  "数据库查询错误: " + err.Error(),
+		})
+		return
+	}
+	if userData == nil {
+		c.JSON(consts.StatusOK, &user.UserInfoResp{
+			Code: common.Code_DBErr,
+			Msg:  "用户未找到",
+		})
+		return
+	}
+
+	resp.Code = common.Code_Success
+	resp.Msg = "用户信息更新成功"
+	resp.Data = &user.UserData{
+		UserId:   strconv.Itoa(int(userData.ID)),
+		Username: userData.Username,
+		Email: func() string {
+			if userData.Email != nil {
+				return *userData.Email
+			}
+			return ""
+		}(),
+	}
+	//resp.Data = u
 
 	c.JSON(consts.StatusOK, resp)
 }

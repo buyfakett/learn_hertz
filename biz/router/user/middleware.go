@@ -57,3 +57,11 @@ func _change_passwdMw() []app.HandlerFunc {
 func _changepasswdMw() []app.HandlerFunc {
 	return nil
 }
+
+func _infoMw() []app.HandlerFunc {
+	return nil
+}
+
+func _userinfoMw() []app.HandlerFunc {
+	return nil
+}
