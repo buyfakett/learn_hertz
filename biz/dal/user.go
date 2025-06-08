@@ -48,24 +48,30 @@ func UpdateUser(user *dbmodel.User) error {
 }
 
 // GetUserList 获取用户列表（分页）
-func GetUserList(pageSize int, offset int, username string, email string) ([]*dbmodel.User, error) {
+func GetUserList(pageSize int, offset int, username string, email string) ([]*dbmodel.User, int64, error) {
 	// 显式初始化空数组
 	var users []*dbmodel.User
 
-	// 分页查询
-	if err := DB.Model(&dbmodel.User{}).
-		Where("username LIKE ? AND (email LIKE ? OR email IS NULL)",
-			"%"+username+"%",
-			"%"+email+"%",
-		).
-		Offset(offset).
-		Limit(pageSize).
-		Order("id").
-		Find(&users).Error; err != nil {
-		return nil, err
+	query := DB.Model(&dbmodel.User{})
+
+	if username != "" {
+		query = query.Where("username LIKE ?", "%"+username+"%")
+	}
+	if email != "" {
+		query = query.Where("email LIKE ?", "%"+email+"%")
 	}
 
-	return users, nil
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 分页查询
+	if err := query.Order("id").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, total, nil
 }
 
 func UserLogin(username string) (*dbmodel.User, error) {

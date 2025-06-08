@@ -31,7 +31,7 @@ type CreateBookReq struct {
 	unknownFields protoimpl.UnknownFields
 
 	Title   string  `protobuf:"bytes,1,opt,name=title,proto3" form:"title" json:"title,omitempty" vd:"(len($) > 0 && len($) < 255)"`
-	Author  string  `protobuf:"bytes,2,opt,name=author,proto3" form:"author" json:"author,omitempty" vd:"(len($) > 0 && len($) < 255)"`
+	Author  string  `protobuf:"bytes,2,opt,name=author,proto3" form:"author" form:"author" json:"author,omitempty" vd:"(len($) > 0 && len($) < 255)"`
 	Year    string  `protobuf:"bytes,3,opt,name=year,proto3" form:"year" json:"year,omitempty" vd:"(len($) == 7 && $ >= '1970-01' && $ <= '2100-12')"`
 	Summary *string `protobuf:"bytes,4,opt,name=summary,proto3,oneof" form:"summary" json:"summary,omitempty" vd:"($ == nil || len($) < 1000)"`
 }
@@ -153,7 +153,7 @@ type UpdateBookReq struct {
 	BookId  string  `protobuf:"bytes,1,opt,name=book_id,json=bookId,proto3" json:"book_id,omitempty" path:"book_id" vd:"(len($) > 0)"`
 	Title   *string `protobuf:"bytes,2,opt,name=title,proto3,oneof" form:"title" json:"title,omitempty" vd:"($ == nil || (len($) > 0 && len($) < 255))"`
 	Author  *string `protobuf:"bytes,3,opt,name=author,proto3,oneof" form:"author" json:"author,omitempty" vd:"($ == nil || (len($) > 0 && len($) < 255))"`
-	Year    *string `protobuf:"bytes,4,opt,name=year,proto3,oneof" form:"year" json:"year,omitempty" vd:"($ == nil || (len($) == 7 && $ >= '1970-01' && $ <= '2100-12'))"`
+	Year    *string `protobuf:"bytes,4,opt,name=year,proto3,oneof" form:"year" form:"year" json:"year,omitempty" vd:"($ == nil || (len($) == 7 && $ >= '1970-01' && $ <= '2100-12'))"`
 	Summary *string `protobuf:"bytes,5,opt,name=summary,proto3,oneof" form:"summary" json:"summary,omitempty" vd:"($ == nil || len($) < 1000)"`
 }
 
@@ -360,7 +360,7 @@ type BookListResp struct {
 
 	Code  common.Code     `protobuf:"varint,1,opt,name=code,proto3,enum=Code" form:"code" json:"code,omitempty" query:"code"`
 	Msg   string          `protobuf:"bytes,2,opt,name=msg,proto3" form:"msg" json:"msg,omitempty" query:"msg"`
-	Total int32           `protobuf:"varint,3,opt,name=total,proto3" form:"total" json:"total,omitempty" query:"total"`
+	Total int64           `protobuf:"varint,3,opt,name=total,proto3" form:"total" json:"total,omitempty" query:"total"`
 	Data  []*BookListData `protobuf:"bytes,4,rep,name=data,proto3" form:"data" json:"data,omitempty" query:"data"`
 }
 
@@ -410,7 +410,7 @@ func (x *BookListResp) GetMsg() string {
 	return ""
 }
 
-func (x *BookListResp) GetTotal() int32 {
+func (x *BookListResp) GetTotal() int64 {
 	if x != nil {
 		return x.Total
 	}
@@ -594,7 +594,7 @@ var file_book_proto_rawDesc = []byte{
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x05, 0x2e, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x63,
 	0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x2c, 0x0a, 0x04, 0x64,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x2c, 0x0a, 0x04, 0x64,
 	0x61, 0x74, 0x61, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69,
 	0x63, 0x2e, 0x62, 0x6f, 0x6f, 0x6b, 0x2e, 0x42, 0x6f, 0x6f, 0x6b, 0x4c, 0x69, 0x73, 0x74, 0x44,
 	0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x83, 0x01, 0x0a, 0x0c, 0x42, 0x6f,

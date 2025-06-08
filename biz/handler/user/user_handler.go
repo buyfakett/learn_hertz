@@ -342,7 +342,7 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	// 获取用户列表和总数（转换分页参数类型）
-	users, err := dal.GetUserList(int(req.PageSize), int(offset), *req.Username, *req.Email)
+	users, total, err := dal.GetUserList(int(req.PageSize), int(offset), *req.Username, *req.Email)
 	if err != nil {
 		c.JSON(consts.StatusOK, &user.UserListResp{
 			Code: common.Code_DBErr,
@@ -368,7 +368,7 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 
 	resp.Code = common.Code_Success
 	resp.Msg = "获取成功"
-	resp.Total = int32(len(userList))
+	resp.Total = total
 	resp.Data = userList
 
 	c.JSON(consts.StatusOK, resp)
@@ -424,7 +424,6 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 			return ""
 		}(),
 	}
-	//resp.Data = u
 
 	c.JSON(consts.StatusOK, resp)
 }

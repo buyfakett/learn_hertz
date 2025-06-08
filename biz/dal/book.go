@@ -43,7 +43,7 @@ func GetBookByID(bookID uint) (*dbmodel.Book, error) {
 	return &book, nil
 }
 
-func GetBookList(pageSize, offset int, title, author string) ([]*dbmodel.Book, error) {
+func GetBookList(pageSize, offset int, title, author string) ([]*dbmodel.Book, int64, error) {
 	var books []*dbmodel.Book
 	query := DB.Model(&dbmodel.Book{})
 
@@ -54,8 +54,13 @@ func GetBookList(pageSize, offset int, title, author string) ([]*dbmodel.Book, e
 		query = query.Where("author LIKE ?", "%"+author+"%")
 	}
 
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
 	err := query.Order("id").Limit(pageSize).Offset(offset).Find(&books).Error
-	return books, err
+	return books, total, err
 }
 
 func IsBookExists(title string) (bool, error) {

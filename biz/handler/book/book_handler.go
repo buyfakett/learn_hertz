@@ -169,7 +169,7 @@ func BookList(ctx context.Context, c *app.RequestContext) {
 		author = *req.Author
 	}
 
-	books, err := dal.GetBookList(int(req.PageSize), int(offset), title, author)
+	books, total, err := dal.GetBookList(int(req.PageSize), int(offset), title, author)
 	if err != nil {
 		c.JSON(consts.StatusOK, &book.BookListResp{
 			Code: common.Code_DBErr,
@@ -196,7 +196,7 @@ func BookList(ctx context.Context, c *app.RequestContext) {
 
 	resp.Code = common.Code_Success
 	resp.Msg = "获取成功"
-	resp.Total = int32(len(bookList))
+	resp.Total = total
 	resp.Data = bookList
 	c.JSON(consts.StatusOK, resp)
 }

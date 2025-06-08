@@ -109,7 +109,7 @@ message BookListReq {
 message BookListResp {
   Code code = 1;
   string msg = 2;
-  int32 total = 3;
+  int64 total = 3;
   repeated BookListData data = 4;
 }
 
