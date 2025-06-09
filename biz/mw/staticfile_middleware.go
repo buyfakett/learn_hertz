@@ -28,8 +28,9 @@ func StaticFileMiddleware(staticFS fs.FS) app.HandlerFunc {
 			filePath = "/index.html"
 		}
 
-		fullPath := filepath.Join("static", filePath)
-		indexPath := filepath.Join("static", "index.html")
+		relPath := strings.TrimPrefix(filePath, "/")
+		fullPath := "static/" + relPath
+		indexPath := "static/index.html"
 
 		// 返回指定路径的文件
 		if serveFileFromFS(c, staticFS, fullPath) {
@@ -56,9 +57,8 @@ func serveFileFromFS(c *app.RequestContext, filesystem fs.FS, path string) bool 
 		return false
 	}
 	defer func(file fs.File) {
-		err := file.Close()
-		if err != nil {
-
+		if err := file.Close(); err != nil {
+			hlog.Debugf("关闭文件 %s 时出错: %v", path, err)
 		}
 	}(file)
 
