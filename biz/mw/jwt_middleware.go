@@ -19,7 +19,7 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 
 		// 跳过 API 路由
 		for _, prefix := range skipPrefixes {
-			if strings.HasPrefix(path, prefix) {
+			if !strings.HasPrefix(path, prefix) {
 				c.Next(ctx)
 				return
 			}
