@@ -15,14 +15,20 @@ func JWTAuthMiddleware(excludedPaths []string) app.HandlerFunc {
 		// 获取请求路径并转换为字符串
 		path := string(c.Request.Path())
 
-		skipPrefixes := []string{"/api", "/swagger"}
+		skipPrefixes := []string{"/api"}
 
-		// 跳过 API 路由
+		// 需要鉴权的路径
 		for _, prefix := range skipPrefixes {
 			if !strings.HasPrefix(path, prefix) {
 				c.Next(ctx)
 				return
 			}
+		}
+
+		// 如果路径是 swagger 文档，则跳过鉴权
+		if strings.HasPrefix(path, "/api/swagger") {
+			c.Next(ctx)
+			return
 		}
 
 		// 如果路径在排除列表中，则跳过鉴权

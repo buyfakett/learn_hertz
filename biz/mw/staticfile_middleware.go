@@ -18,7 +18,7 @@ func StaticFileMiddleware(staticFS fs.FS) app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		filePath := string(c.Path())
 
-		skipPrefixes := []string{"/api", "/swagger"}
+		skipPrefixes := []string{"/api"}
 
 		// 跳过 API 路由
 		for _, prefix := range skipPrefixes {
