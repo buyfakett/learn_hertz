@@ -28,6 +28,7 @@ jobs:
       - name: build web
         run: |
           cd web/
+          npm install -g pnpm
           pnpm install
           pnpm run build
           cd ..
