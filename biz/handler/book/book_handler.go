@@ -14,8 +14,13 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
-// CreateBook .
-// @router /api/book/add [PUT]
+// CreateBook 创建书籍
+// @Tags 书籍
+// @Summary 创建书籍
+// @Description 创建书籍
+// @Accept application/json
+// @Produce application/json
+// @router /book/add [PUT]
 func CreateBook(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.CreateBookReq
@@ -60,8 +65,13 @@ func CreateBook(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// DeleteBook .
-// @router /api/book/delete/:book_id [DELETE]
+// DeleteBook 删除书籍
+// @Tags 书籍
+// @Summary 删除书籍
+// @Description 删除书籍
+// @Accept application/json
+// @Produce application/json
+// @router /book/delete/:book_id [DELETE]
 func DeleteBook(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.DeleteBookReq
@@ -84,8 +94,13 @@ func DeleteBook(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// UpdateBook .
-// @router /api/book/update/:book_id [POST]
+// UpdateBook 更新书籍
+// @Tags 书籍
+// @Summary 更新书籍
+// @Description 更新书籍
+// @Accept application/json
+// @Produce application/json
+// @router /book/update/:book_id [POST]
 func UpdateBook(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.UpdateBookReq
@@ -140,8 +155,13 @@ func UpdateBook(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// BookList .
-// @router /api/book/list [GET]
+// BookList 书籍列表
+// @Tags 书籍
+// @Summary 书籍列表
+// @Description 书籍列表
+// @Accept application/json
+// @Produce application/json
+// @router /book/list [GET]
 func BookList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.BookListReq

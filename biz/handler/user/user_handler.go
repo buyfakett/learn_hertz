@@ -15,8 +15,13 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
-// CreateUser .
-// @router /api/user/add [POST]
+// CreateUser 创建用户
+// @Tags 用户
+// @Summary 创建用户
+// @Description 创建用户
+// @Accept application/json
+// @Produce application/json
+// @router /user/add [POST]
 func CreateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.CreateUserReq
@@ -71,8 +76,13 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// DeleteUser .
-// @router /api/user/delete/:user_id [POST]
+// DeleteUser 删除用户
+// @Tags 用户
+// @Summary 删除用户
+// @Description 删除用户
+// @Accept application/json
+// @Produce application/json
+// @router /user/delete/:user_id [POST]
 func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.DeleteUserReq
@@ -116,8 +126,13 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// UpdateUser .
-// @router /api/user/update/:user_id [POST]
+// UpdateUser 更新用户
+// @Tags 用户
+// @Summary 更新用户
+// @Description 更新用户
+// @Accept application/json
+// @Produce application/json
+// @router /user/update/:user_id [POST]
 func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UpdateUserReq
@@ -197,8 +212,13 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// ChangePasswd .
-// @router /api/user/change_passwd/:user_id [POST]
+// ChangePasswd 修改用户密码
+// @Tags 用户
+// @Summary 修改用户密码
+// @Description 修改用户密码
+// @Accept application/json
+// @Produce application/json
+// @router /user/change_passwd/:user_id [POST]
 func ChangePasswd(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.ChangePasswdReq
@@ -256,8 +276,13 @@ func ChangePasswd(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// UserLogin .
-// @router /api/user/login [POST]
+// UserLogin 用户登录
+// @Tags 用户
+// @Summary 用户登录
+// @Description 用户登录
+// @Accept application/json
+// @Produce application/json
+// @router /user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.LoginUserReq
@@ -297,8 +322,13 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// UserList .
-// @router /api/user/list [GET]
+// UserList 用户列表
+// @Tags 用户
+// @Summary 用户列表
+// @Description 用户列表
+// @Accept application/json
+// @Produce application/json
+// @router /user/list [GET]
 func UserList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UserListReq
@@ -374,8 +404,13 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// UserInfo .
-// @router /api/user/info/:user_id [GET]
+// UserInfo 用户信息
+// @Tags 用户
+// @Summary 用户信息
+// @Description 用户信息
+// @Accept application/json
+// @Produce application/json
+// @router /user/info/:user_id [GET]
 func UserInfo(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UserInfoReq

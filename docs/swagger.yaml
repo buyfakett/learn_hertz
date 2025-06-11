@@ -7,39 +7,138 @@ info:
   title: hertz_service
   version: 0.1.1
 paths:
-  /api/book/add:
+  /book/add:
     put:
+      consumes:
+      - application/json
+      description: 创建书籍
+      produces:
+      - application/json
       responses: {}
-  /api/book/delete/:book_id:
+      summary: 创建书籍
+      tags:
+      - 书籍
+  /book/delete/:book_id:
     delete:
+      consumes:
+      - application/json
+      description: 删除书籍
+      produces:
+      - application/json
       responses: {}
-  /api/book/list:
+      summary: 删除书籍
+      tags:
+      - 书籍
+  /book/list:
     get:
+      consumes:
+      - application/json
+      description: 书籍列表
+      produces:
+      - application/json
       responses: {}
-  /api/book/update/:book_id:
+      summary: 书籍列表
+      tags:
+      - 书籍
+  /book/update/:book_id:
     post:
+      consumes:
+      - application/json
+      description: 更新书籍
+      produces:
+      - application/json
       responses: {}
-  /api/user/add:
-    post:
-      responses: {}
-  /api/user/change_passwd/:user_id:
-    post:
-      responses: {}
-  /api/user/delete/:user_id:
-    post:
-      responses: {}
-  /api/user/info/:user_id:
+      summary: 更新书籍
+      tags:
+      - 书籍
+  /ping:
     get:
+      consumes:
+      - application/json
+      description: 测试网络接口
+      produces:
+      - application/json
       responses: {}
-  /api/user/list:
+      summary: 测试网络接口
+      tags:
+      - 测试
+  /user/add:
+    post:
+      consumes:
+      - application/json
+      description: 创建用户
+      produces:
+      - application/json
+      responses: {}
+      summary: 创建用户
+      tags:
+      - 用户
+  /user/change_passwd/:user_id:
+    post:
+      consumes:
+      - application/json
+      description: 修改用户密码
+      produces:
+      - application/json
+      responses: {}
+      summary: 修改用户密码
+      tags:
+      - 用户
+  /user/delete/:user_id:
+    post:
+      consumes:
+      - application/json
+      description: 删除用户
+      produces:
+      - application/json
+      responses: {}
+      summary: 删除用户
+      tags:
+      - 用户
+  /user/info/:user_id:
     get:
+      consumes:
+      - application/json
+      description: 用户信息
+      produces:
+      - application/json
       responses: {}
-  /api/user/login:
+      summary: 用户信息
+      tags:
+      - 用户
+  /user/list:
+    get:
+      consumes:
+      - application/json
+      description: 用户列表
+      produces:
+      - application/json
+      responses: {}
+      summary: 用户列表
+      tags:
+      - 用户
+  /user/login:
     post:
+      consumes:
+      - application/json
+      description: 用户登录
+      produces:
+      - application/json
       responses: {}
-  /api/user/update/:user_id:
+      summary: 用户登录
+      tags:
+      - 用户
+  /user/update/:user_id:
     post:
+      consumes:
+      - application/json
+      description: 更新用户
+      produces:
+      - application/json
       responses: {}
+      summary: 更新用户
+      tags:
+      - 用户
 schemes:
 - http
 swagger: "2.0"

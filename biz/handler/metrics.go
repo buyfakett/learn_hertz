@@ -119,7 +119,7 @@ func (r *HertzRequestAdapter) TLS() interface{} {
 	return nil
 }
 
-// Metrics Handler to expose Prometheus metrics
+// MetricsHandler Metrics Handler to expose Prometheus metrics
 func MetricsHandler(ctx context.Context, c *app.RequestContext) {
 	// Update metrics
 	updateMetrics()

@@ -18,58 +18,195 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/book/add": {
+        "/book/add": {
             "put": {
+                "description": "创建书籍",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "书籍"
+                ],
+                "summary": "创建书籍",
                 "responses": {}
             }
         },
-        "/api/book/delete/:book_id": {
+        "/book/delete/:book_id": {
             "delete": {
+                "description": "删除书籍",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "书籍"
+                ],
+                "summary": "删除书籍",
                 "responses": {}
             }
         },
-        "/api/book/list": {
+        "/book/list": {
             "get": {
+                "description": "书籍列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "书籍"
+                ],
+                "summary": "书籍列表",
                 "responses": {}
             }
         },
-        "/api/book/update/:book_id": {
+        "/book/update/:book_id": {
             "post": {
+                "description": "更新书籍",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "书籍"
+                ],
+                "summary": "更新书籍",
                 "responses": {}
             }
         },
-        "/api/user/add": {
-            "post": {
-                "responses": {}
-            }
-        },
-        "/api/user/change_passwd/:user_id": {
-            "post": {
-                "responses": {}
-            }
-        },
-        "/api/user/delete/:user_id": {
-            "post": {
-                "responses": {}
-            }
-        },
-        "/api/user/info/:user_id": {
+        "/ping": {
             "get": {
+                "description": "测试网络接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "测试"
+                ],
+                "summary": "测试网络接口",
                 "responses": {}
             }
         },
-        "/api/user/list": {
+        "/user/add": {
+            "post": {
+                "description": "创建用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "创建用户",
+                "responses": {}
+            }
+        },
+        "/user/change_passwd/:user_id": {
+            "post": {
+                "description": "修改用户密码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "修改用户密码",
+                "responses": {}
+            }
+        },
+        "/user/delete/:user_id": {
+            "post": {
+                "description": "删除用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "删除用户",
+                "responses": {}
+            }
+        },
+        "/user/info/:user_id": {
             "get": {
+                "description": "用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户信息",
                 "responses": {}
             }
         },
-        "/api/user/login": {
-            "post": {
+        "/user/list": {
+            "get": {
+                "description": "用户列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户列表",
                 "responses": {}
             }
         },
-        "/api/user/update/:user_id": {
+        "/user/login": {
             "post": {
+                "description": "用户登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户登录",
+                "responses": {}
+            }
+        },
+        "/user/update/:user_id": {
+            "post": {
+                "description": "更新用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "更新用户",
                 "responses": {}
             }
         }
