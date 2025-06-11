@@ -19,6 +19,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: git fetch --unshallow --quiet --tags --force
+      - name: Checkout web
+        uses: actions/checkout@v4
+        with:
+          repository: buyfakett/semi-design-pro
+          token: ${{ secrets.RELEASE_TOKEN }}
+          path: web
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: build web
+        run: |
+          cd web/
+          npm install -g pnpm
+          pnpm install
+          pnpm run build
+          cd ..
+          mkdir static/
+          cp -r web/dist/* static/
+          rm -rf web/
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
@@ -40,6 +60,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: git fetch --unshallow --quiet --tags --force
+      - name: Checkout web
+        uses: actions/checkout@v4
+        with:
+          repository: buyfakett/semi-design-pro
+          token: ${{ secrets.RELEASE_TOKEN }}
+          path: web
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: build web
+        run: |
+          cd web/
+          npm install -g pnpm
+          pnpm install
+          pnpm run build
+          cd ..
+          mkdir static/
+          cp -r web/dist/* static/
+          rm -rf web/
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - uses: docker/metadata-action@v5
