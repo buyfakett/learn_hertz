@@ -11,9 +11,10 @@ import (
 )
 
 type ServerConfig struct {
-	Port     int    `mapstructure:"port"`
-	Name     string `mapstructure:"name"`
-	LogLevel string `mapstructure:"log_level"`
+	Port          int    `mapstructure:"port"`
+	Name          string `mapstructure:"name"`
+	LogLevel      string `mapstructure:"log_level"`
+	EnableSwagger bool   `mapstructure:"swagger"`
 }
 
 type DbConfig struct {

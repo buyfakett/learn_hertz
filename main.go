@@ -7,6 +7,8 @@ import (
 	"embed"
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/hertz-contrib/swagger"
+	swaggerFiles "github.com/swaggo/files"
 	"hertz_demo/biz/dal"
 	"hertz_demo/biz/mw"
 	"hertz_demo/utils/config"
@@ -22,6 +24,7 @@ import (
 	"github.com/hertz-contrib/cors"
 	"github.com/hertz-contrib/gzip"
 	"github.com/hertz-contrib/logger/accesslog"
+	_ "hertz_demo/docs"
 )
 
 //go:embed config/default.yaml
@@ -30,6 +33,15 @@ var defaultConfigContent []byte
 //go:embed static/*
 var staticFS embed.FS
 
+// @title hertz_service
+// @version 0.1.1
+// @description learn hertz by [buyfakett](https://github.com/buyfakett).
+
+// @contact.name buyfakett
+// @contact.url https://github.com/buyfakett
+
+// @BasePath /api
+// @schemes http
 func main() {
 	config.InitConfig(defaultConfigContent)
 	logger.InitLog(config.Cfg.Server.LogLevel)
@@ -77,6 +89,12 @@ func main() {
 	h.Use(mw.StaticFileMiddleware(staticFS))
 
 	register(h)
+
+	// 注册swagger文档
+	if config.Cfg.Server.EnableSwagger {
+		hlog.Info("🚀 Swagger文档已启用")
+		h.GET("/api/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	// 捕获 Ctrl+C / kill 等退出信号
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

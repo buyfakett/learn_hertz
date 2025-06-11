@@ -1,0 +1,73 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "learn hertz by [buyfakett](https://github.com/buyfakett).",
+        "title": "hertz_service",
+        "contact": {
+            "name": "buyfakett",
+            "url": "https://github.com/buyfakett"
+        },
+        "version": "0.1.1"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/api/book/add": {
+            "put": {
+                "responses": {}
+            }
+        },
+        "/api/book/delete/:book_id": {
+            "delete": {
+                "responses": {}
+            }
+        },
+        "/api/book/list": {
+            "get": {
+                "responses": {}
+            }
+        },
+        "/api/book/update/:book_id": {
+            "post": {
+                "responses": {}
+            }
+        },
+        "/api/user/add": {
+            "post": {
+                "responses": {}
+            }
+        },
+        "/api/user/change_passwd/:user_id": {
+            "post": {
+                "responses": {}
+            }
+        },
+        "/api/user/delete/:user_id": {
+            "post": {
+                "responses": {}
+            }
+        },
+        "/api/user/info/:user_id": {
+            "get": {
+                "responses": {}
+            }
+        },
+        "/api/user/list": {
+            "get": {
+                "responses": {}
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "responses": {}
+            }
+        },
+        "/api/user/update/:user_id": {
+            "post": {
+                "responses": {}
+            }
+        }
+    }
+}

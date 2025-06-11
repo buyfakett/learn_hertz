@@ -18,10 +18,14 @@ func StaticFileMiddleware(staticFS fs.FS) app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		filePath := string(c.Path())
 
+		skipPrefixes := []string{"/api", "/swagger"}
+
 		// 跳过 API 路由
-		if strings.HasPrefix(filePath, "/api") {
-			c.Next(ctx)
-			return
+		for _, prefix := range skipPrefixes {
+			if strings.HasPrefix(filePath, prefix) {
+				c.Next(ctx)
+				return
+			}
 		}
 
 		if filePath == "" || filePath == "/" {
