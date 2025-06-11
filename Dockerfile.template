@@ -1,6 +1,8 @@
 ARG ALPINE_VERSION=3.22
 ARG GO_VERSION=1.24.4
+ARG NODE_VERSION=22
 ARG AUTHOR=buyfakett
+ARG FRONTEND=semi-design-pro
 ARG SERVER_NAME=hertz_service
 
 # 支持多平台构建
@@ -9,6 +11,22 @@ ARG BUILDPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
+
+# 前端
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS webui
+ARG AUTHOR
+ARG FRONTEND
+ARG repo_url=https://github.com/${AUTHOR}/${FRONTEND}
+ARG branch_name=main
+WORKDIR /app
+RUN set -eux; \
+    apk add --no-cache git; \
+    git clone --depth 1 --branch "$branch_name" "$repo_url"; \
+    cd ${FRONTEND}; \
+    npm i -g pnpm; \
+    pnpm i; \
+    pnpm build; \
+    mv dist ../static
 
 # 后端
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
@@ -24,6 +42,8 @@ WORKDIR /app
 COPY . .
 
 RUN go mod download
+
+COPY --from=webui /app/static ./static
 
 # 根据平台推导出 GOOS 和 GOARCH
 RUN set -eux; \

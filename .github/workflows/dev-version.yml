@@ -14,6 +14,26 @@ jobs:
       packages: write # to publish to ghcr.io
     steps:
       - uses: actions/checkout@v4
+      - name: Checkout web
+        uses: actions/checkout@v4
+        with:
+          repository: buyfakett/semi-design-pro
+          token: ${{ secrets.RELEASE_TOKEN }}
+          path: web
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: build web
+        run: |
+          cd web/
+          pnpm install
+          pnpm run build
+          cd ..
+          mkdir static/
+          cp -r web/dist/* static/
+          rm -rf web/
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - uses: docker/metadata-action@v5
