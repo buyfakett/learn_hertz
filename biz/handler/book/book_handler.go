@@ -20,7 +20,9 @@ import (
 // @Description 创建书籍
 // @Accept application/json
 // @Produce application/json
-// @router /book/add [PUT]
+// @Param req body book.CreateBookReq true "书籍信息"
+// @Success 200 {object} book.CommonBookResp
+// @router /api/book/add [PUT]
 func CreateBook(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.CreateBookReq
@@ -71,7 +73,9 @@ func CreateBook(ctx context.Context, c *app.RequestContext) {
 // @Description 删除书籍
 // @Accept application/json
 // @Produce application/json
-// @router /book/delete/:book_id [DELETE]
+// @Param book_id path string true "书籍ID"
+// @Success 200 {object} book.CommonBookResp
+// @router /api/book/delete/{book_id} [DELETE]
 func DeleteBook(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.DeleteBookReq
@@ -100,7 +104,10 @@ func DeleteBook(ctx context.Context, c *app.RequestContext) {
 // @Description 更新书籍
 // @Accept application/json
 // @Produce application/json
-// @router /book/update/:book_id [POST]
+// @Param book_id path string true "书籍ID"
+// @Param req body book.UpdateBookReq true "更新信息"
+// @Success 200 {object} book.CommonBookResp
+// @router /api/book/update/{book_id} [POST]
 func UpdateBook(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.UpdateBookReq
@@ -161,7 +168,12 @@ func UpdateBook(ctx context.Context, c *app.RequestContext) {
 // @Description 书籍列表
 // @Accept application/json
 // @Produce application/json
-// @router /book/list [GET]
+// @Param page query int false "页码" default(1)
+// @Param page_size query int false "每页数量" default(10)
+// @Param title query string false "书名"
+// @Param author query string false "作者"
+// @Success 200 {object} book.BookListResp
+// @router /api/book/list [GET]
 func BookList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req book.BookListReq

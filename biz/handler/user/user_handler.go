@@ -21,7 +21,9 @@ import (
 // @Description 创建用户
 // @Accept application/json
 // @Produce application/json
-// @router /user/add [POST]
+// @Param req body user.CreateUserReq true "用户信息"
+// @Success 200 {object} user.CommonUserResp
+// @router /api/user/add [POST]
 func CreateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.CreateUserReq
@@ -82,7 +84,9 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 // @Description 删除用户
 // @Accept application/json
 // @Produce application/json
-// @router /user/delete/:user_id [POST]
+// @Param user_id path string true "用户ID"
+// @Success 200 {object} user.CommonUserResp
+// @router /api/user/delete/{user_id} [POST]
 func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.DeleteUserReq
@@ -132,7 +136,10 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 // @Description 更新用户
 // @Accept application/json
 // @Produce application/json
-// @router /user/update/:user_id [POST]
+// @Param user_id path string true "用户ID"
+// @Param req body user.UpdateUserReq true "更新信息"
+// @Success 200 {object} user.CommonUserResp
+// @router /api/user/update/{user_id} [POST]
 func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UpdateUserReq
@@ -218,7 +225,10 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 // @Description 修改用户密码
 // @Accept application/json
 // @Produce application/json
-// @router /user/change_passwd/:user_id [POST]
+// @Param user_id path string true "用户ID"
+// @Param req body user.ChangePasswdReq true "密码信息"
+// @Success 200 {object} user.CommonUserResp
+// @router /api/user/change_passwd/{user_id} [POST]
 func ChangePasswd(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.ChangePasswdReq
@@ -282,7 +292,9 @@ func ChangePasswd(ctx context.Context, c *app.RequestContext) {
 // @Description 用户登录
 // @Accept application/json
 // @Produce application/json
-// @router /user/login [POST]
+// @Param req body user.LoginUserReq true "登录凭证"
+// @Success 200 {object} user.UserLoginResp
+// @router /api/user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.LoginUserReq
@@ -328,7 +340,12 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 // @Description 用户列表
 // @Accept application/json
 // @Produce application/json
-// @router /user/list [GET]
+// @Param page query int false "页码" default(1)
+// @Param page_size query int false "每页数量" default(10)
+// @Param username query string false "用户名"
+// @Param email query string false "邮箱"
+// @Success 200 {object} user.UserListResp
+// @router /api/user/list [GET]
 func UserList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UserListReq
@@ -410,7 +427,9 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 // @Description 用户信息
 // @Accept application/json
 // @Produce application/json
-// @router /user/info/:user_id [GET]
+// @Param user_id path string true "用户ID"
+// @Success 200 {object} user.UserInfoResp
+// @router /api/user/info/{user_id} [GET]
 func UserInfo(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req user.UserInfoReq

@@ -40,8 +40,12 @@ var staticFS embed.FS
 // @contact.name buyfakett
 // @contact.url https://github.com/buyfakett
 
-// @BasePath /api
+// @BasePath /
 // @schemes http
+//
+//	@securityDefinitions.apikey	ApiKeyAuth
+//	@in	header
+//	@name authorization
 func main() {
 	config.InitConfig(defaultConfigContent)
 	logger.InitLog(config.Cfg.Server.LogLevel)
@@ -83,18 +87,18 @@ func main() {
 		return nil
 	})
 
+	// 注册swagger文档
+	if config.Cfg.Server.EnableSwagger {
+		hlog.Info("🚀 Swagger文档已启用")
+		h.GET("/api/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
+	}
+
 	// 注册鉴权中间件
 	h.Use(mw.JWTAuthMiddleware(config.Cfg.Auth.ExcludedPaths))
 	// 注册静态文件中间件
 	h.Use(mw.StaticFileMiddleware(staticFS))
 
 	register(h)
-
-	// 注册swagger文档
-	if config.Cfg.Server.EnableSwagger {
-		hlog.Info("🚀 Swagger文档已启用")
-		h.GET("/api/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
-	}
 
 	// 捕获 Ctrl+C / kill 等退出信号
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

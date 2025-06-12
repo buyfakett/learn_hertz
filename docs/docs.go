@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/book/add": {
+        "/api/book/add": {
             "put": {
                 "description": "创建书籍",
                 "consumes": [
@@ -31,10 +31,28 @@ const docTemplate = `{
                     "书籍"
                 ],
                 "summary": "创建书籍",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "书籍信息",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/book.CreateBookReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/book.CommonBookResp"
+                        }
+                    }
+                }
             }
         },
-        "/book/delete/:book_id": {
+        "/api/book/delete/{book_id}": {
             "delete": {
                 "description": "删除书籍",
                 "consumes": [
@@ -47,10 +65,26 @@ const docTemplate = `{
                     "书籍"
                 ],
                 "summary": "删除书籍",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "书籍ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/book.CommonBookResp"
+                        }
+                    }
+                }
             }
         },
-        "/book/list": {
+        "/api/book/list": {
             "get": {
                 "description": "书籍列表",
                 "consumes": [
@@ -63,10 +97,45 @@ const docTemplate = `{
                     "书籍"
                 ],
                 "summary": "书籍列表",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "书名",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "作者",
+                        "name": "author",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/book.BookListResp"
+                        }
+                    }
+                }
             }
         },
-        "/book/update/:book_id": {
+        "/api/book/update/{book_id}": {
             "post": {
                 "description": "更新书籍",
                 "consumes": [
@@ -79,10 +148,35 @@ const docTemplate = `{
                     "书籍"
                 ],
                 "summary": "更新书籍",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "书籍ID",
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新信息",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/book.UpdateBookReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/book.CommonBookResp"
+                        }
+                    }
+                }
             }
         },
-        "/ping": {
+        "/api/ping": {
             "get": {
                 "description": "测试网络接口",
                 "consumes": [
@@ -98,7 +192,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/user/add": {
+        "/api/user/add": {
             "post": {
                 "description": "创建用户",
                 "consumes": [
@@ -111,10 +205,28 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "创建用户",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "用户信息",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.CreateUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.CommonUserResp"
+                        }
+                    }
+                }
             }
         },
-        "/user/change_passwd/:user_id": {
+        "/api/user/change_passwd/{user_id}": {
             "post": {
                 "description": "修改用户密码",
                 "consumes": [
@@ -127,10 +239,35 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "修改用户密码",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "密码信息",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.ChangePasswdReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.CommonUserResp"
+                        }
+                    }
+                }
             }
         },
-        "/user/delete/:user_id": {
+        "/api/user/delete/{user_id}": {
             "post": {
                 "description": "删除用户",
                 "consumes": [
@@ -143,10 +280,26 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "删除用户",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.CommonUserResp"
+                        }
+                    }
+                }
             }
         },
-        "/user/info/:user_id": {
+        "/api/user/info/{user_id}": {
             "get": {
                 "description": "用户信息",
                 "consumes": [
@@ -159,10 +312,26 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "用户信息",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UserInfoResp"
+                        }
+                    }
+                }
             }
         },
-        "/user/list": {
+        "/api/user/list": {
             "get": {
                 "description": "用户列表",
                 "consumes": [
@@ -175,10 +344,45 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "用户列表",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "邮箱",
+                        "name": "email",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UserListResp"
+                        }
+                    }
+                }
             }
         },
-        "/user/login": {
+        "/api/user/login": {
             "post": {
                 "description": "用户登录",
                 "consumes": [
@@ -191,10 +395,28 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "用户登录",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "登录凭证",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UserLoginResp"
+                        }
+                    }
+                }
             }
         },
-        "/user/update/:user_id": {
+        "/api/user/update/{user_id}": {
             "post": {
                 "description": "更新用户",
                 "consumes": [
@@ -207,8 +429,287 @@ const docTemplate = `{
                     "用户"
                 ],
                 "summary": "更新用户",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新信息",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdateUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.CommonUserResp"
+                        }
+                    }
+                }
             }
+        }
+    },
+    "definitions": {
+        "book.BookListData": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "book_id": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "book.BookListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/common.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/book.BookListData"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "book.CommonBookResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/common.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "book.CreateBookReq": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "book.UpdateBookReq": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "book_id": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
+            }
+        },
+        "common.Code": {
+            "type": "integer",
+            "enum": [
+                0,
+                200,
+                401,
+                500,
+                501,
+                502,
+                503
+            ],
+            "x-enum-varnames": [
+                "Code_Common",
+                "Code_Success",
+                "Code_Unauthorized",
+                "Code_Err",
+                "Code_DBErr",
+                "Code_PasswordErr",
+                "Code_AlreadyExists"
+            ]
+        },
+        "user.ChangePasswdReq": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.CommonUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/common.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.CreateUserReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "可选字段",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "必传字段（proto3 默认规则）",
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginUserReq": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "remember_me": {
+                    "type": "boolean"
+                },
+                "username": {
+                    "description": "必传字段",
+                    "type": "string"
+                }
+            }
+        },
+        "user.UpdateUserReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "可选字段（可传可不传）",
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "description": "必传字段（proto3 默认规则）",
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserData": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserInfoResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/common.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/user.UserData"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserListResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/common.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.UserData"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.UserLoginData": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserLoginResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/common.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/user.UserLoginData"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "authorization",
+            "in": "header"
         }
     }
 }`
@@ -217,7 +718,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.1",
 	Host:             "",
-	BasePath:         "/api",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "hertz_service",
 	Description:      "learn hertz by [buyfakett](https://github.com/buyfakett).",

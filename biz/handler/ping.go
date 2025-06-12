@@ -14,7 +14,7 @@ import (
 // @Description 测试网络接口
 // @Accept application/json
 // @Produce application/json
-// @Router /ping [get]
+// @Router /api/ping [get]
 func Ping(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, utils.H{
 		"msg": "pong",
