@@ -12,18 +12,18 @@ VERSION=$1
 #     echo "<h1>hertz service</h1>" > static/index.html
 # fi
 
-AUTHOR=buyfakett
-FRONTEND=semi-design-pro
-repo_url=https://github.com/${AUTHOR}/${FRONTEND}
-branch_name=main
-git clone --depth 1 --branch "$branch_name" "$repo_url"
-cd ${WORKDIR}/${FRONTEND}/
-npm i -g pnpm
-pnpm i
-pnpm build
-mv dist ../static
-cd ${WORKDIR}/
-rm -rf ${WORKDIR}/${FRONTEND}/
+# AUTHOR=buyfakett
+# FRONTEND=semi-design-pro
+# repo_url=https://github.com/${AUTHOR}/${FRONTEND}
+# branch_name=main
+# git clone --depth 1 --branch "$branch_name" "$repo_url"
+# cd ${WORKDIR}/${FRONTEND}/
+# npm i -g pnpm
+# pnpm i
+# pnpm build
+# mv dist ../static
+# cd ${WORKDIR}/
+# rm -rf ${WORKDIR}/${FRONTEND}/
 
 # 检查依赖工具
 if ! command -v xz &> /dev/null; then
