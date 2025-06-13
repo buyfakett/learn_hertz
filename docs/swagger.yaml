@@ -191,6 +191,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/book.CommonBookResp'
+      security:
+      - ApiKeyAuth: []
       summary: 创建书籍
       tags:
       - 书籍
@@ -212,6 +214,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/book.CommonBookResp'
+      security:
+      - ApiKeyAuth: []
       summary: 删除书籍
       tags:
       - 书籍
@@ -246,6 +250,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/book.BookListResp'
+      security:
+      - ApiKeyAuth: []
       summary: 书籍列表
       tags:
       - 书籍
@@ -273,6 +279,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/book.CommonBookResp'
+      security:
+      - ApiKeyAuth: []
       summary: 更新书籍
       tags:
       - 书籍
@@ -306,6 +314,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
       summary: 创建用户
       tags:
       - 用户
@@ -333,6 +343,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
       summary: 修改用户密码
       tags:
       - 用户
@@ -354,6 +366,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
       summary: 删除用户
       tags:
       - 用户
@@ -375,6 +389,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.UserInfoResp'
+      security:
+      - ApiKeyAuth: []
       summary: 用户信息
       tags:
       - 用户
@@ -409,6 +425,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.UserListResp'
+      security:
+      - ApiKeyAuth: []
       summary: 用户列表
       tags:
       - 用户
@@ -458,6 +476,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.CommonUserResp'
+      security:
+      - ApiKeyAuth: []
       summary: 更新用户
       tags:
       - 用户

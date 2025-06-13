@@ -20,6 +20,11 @@ const docTemplate = `{
     "paths": {
         "/api/book/add": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "创建书籍",
                 "consumes": [
                     "application/json"
@@ -54,6 +59,11 @@ const docTemplate = `{
         },
         "/api/book/delete/{book_id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "删除书籍",
                 "consumes": [
                     "application/json"
@@ -86,6 +96,11 @@ const docTemplate = `{
         },
         "/api/book/list": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "书籍列表",
                 "consumes": [
                     "application/json"
@@ -137,6 +152,11 @@ const docTemplate = `{
         },
         "/api/book/update/{book_id}": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "更新书籍",
                 "consumes": [
                     "application/json"
@@ -194,6 +214,11 @@ const docTemplate = `{
         },
         "/api/user/add": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "创建用户",
                 "consumes": [
                     "application/json"
@@ -228,6 +253,11 @@ const docTemplate = `{
         },
         "/api/user/change_passwd/{user_id}": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "修改用户密码",
                 "consumes": [
                     "application/json"
@@ -269,6 +299,11 @@ const docTemplate = `{
         },
         "/api/user/delete/{user_id}": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "删除用户",
                 "consumes": [
                     "application/json"
@@ -301,6 +336,11 @@ const docTemplate = `{
         },
         "/api/user/info/{user_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "用户信息",
                 "consumes": [
                     "application/json"
@@ -333,6 +373,11 @@ const docTemplate = `{
         },
         "/api/user/list": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "用户列表",
                 "consumes": [
                     "application/json"
@@ -418,6 +463,11 @@ const docTemplate = `{
         },
         "/api/user/update/{user_id}": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "更新用户",
                 "consumes": [
                     "application/json"

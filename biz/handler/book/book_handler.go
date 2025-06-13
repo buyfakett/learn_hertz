@@ -22,6 +22,7 @@ import (
 // @Produce application/json
 // @Param req body book.CreateBookReq true "书籍信息"
 // @Success 200 {object} book.CommonBookResp
+// @Security ApiKeyAuth
 // @router /api/book/add [PUT]
 func CreateBook(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -75,6 +76,7 @@ func CreateBook(ctx context.Context, c *app.RequestContext) {
 // @Produce application/json
 // @Param book_id path string true "书籍ID"
 // @Success 200 {object} book.CommonBookResp
+// @Security ApiKeyAuth
 // @router /api/book/delete/{book_id} [DELETE]
 func DeleteBook(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -107,6 +109,7 @@ func DeleteBook(ctx context.Context, c *app.RequestContext) {
 // @Param book_id path string true "书籍ID"
 // @Param req body book.UpdateBookReq true "更新信息"
 // @Success 200 {object} book.CommonBookResp
+// @Security ApiKeyAuth
 // @router /api/book/update/{book_id} [POST]
 func UpdateBook(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -173,6 +176,7 @@ func UpdateBook(ctx context.Context, c *app.RequestContext) {
 // @Param title query string false "书名"
 // @Param author query string false "作者"
 // @Success 200 {object} book.BookListResp
+// @Security ApiKeyAuth
 // @router /api/book/list [GET]
 func BookList(ctx context.Context, c *app.RequestContext) {
 	var err error

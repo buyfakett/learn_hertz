@@ -23,6 +23,7 @@ import (
 // @Produce application/json
 // @Param req body user.CreateUserReq true "用户信息"
 // @Success 200 {object} user.CommonUserResp
+// @Security ApiKeyAuth
 // @router /api/user/add [POST]
 func CreateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -86,6 +87,7 @@ func CreateUser(ctx context.Context, c *app.RequestContext) {
 // @Produce application/json
 // @Param user_id path string true "用户ID"
 // @Success 200 {object} user.CommonUserResp
+// @Security ApiKeyAuth
 // @router /api/user/delete/{user_id} [POST]
 func DeleteUser(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -139,6 +141,7 @@ func DeleteUser(ctx context.Context, c *app.RequestContext) {
 // @Param user_id path string true "用户ID"
 // @Param req body user.UpdateUserReq true "更新信息"
 // @Success 200 {object} user.CommonUserResp
+// @Security ApiKeyAuth
 // @router /api/user/update/{user_id} [POST]
 func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -228,6 +231,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 // @Param user_id path string true "用户ID"
 // @Param req body user.ChangePasswdReq true "密码信息"
 // @Success 200 {object} user.CommonUserResp
+// @Security ApiKeyAuth
 // @router /api/user/change_passwd/{user_id} [POST]
 func ChangePasswd(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -345,6 +349,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 // @Param username query string false "用户名"
 // @Param email query string false "邮箱"
 // @Success 200 {object} user.UserListResp
+// @Security ApiKeyAuth
 // @router /api/user/list [GET]
 func UserList(ctx context.Context, c *app.RequestContext) {
 	var err error
@@ -429,6 +434,7 @@ func UserList(ctx context.Context, c *app.RequestContext) {
 // @Produce application/json
 // @Param user_id path string true "用户ID"
 // @Success 200 {object} user.UserInfoResp
+// @Security ApiKeyAuth
 // @router /api/user/info/{user_id} [GET]
 func UserInfo(ctx context.Context, c *app.RequestContext) {
 	var err error
