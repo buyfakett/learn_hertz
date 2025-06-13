@@ -43,7 +43,7 @@ jobs:
         with:
           go-version-file: go.mod
           check-latest: true
-      - run: make build
+      - run: /bin/bash -x build.sh ${{ github.ref_name }}
       - name: Install GH CLI
         uses: dev-hanz-ops/install-gh-cli-action@v0.2.1
         with:

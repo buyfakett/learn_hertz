@@ -4,6 +4,8 @@ WORKDIR=$(pwd)
 
 SERVER_NAME=hertz_service
 
+VERSION=$1
+
 # 创建静态文件目录及默认页面
 # mkdir -p static/
 # if [ ! -f static/index.html ]; then
@@ -53,7 +55,11 @@ for platform in "${platforms[@]}"; do
     GOARCH=${platform#*/}
 
     # 生成文件名
-    BINARY="${SERVER_NAME}_${GOOS}_${GOARCH}"
+    if [ -z ${VERSION} ]; then
+      BINARY="${SERVER_NAME}_${GOOS}_${GOARCH}"
+    else
+      BINARY="${SERVER_NAME}_${VERSION}_${GOOS}_${GOARCH}"
+    fi
     [ "$GOOS" = "windows" ] && BINARY="${BINARY}.exe"
 
     # 目标路径
